@@ -20,20 +20,10 @@ router.get('/', async (_req, res, next) => {
 });
 
 router.post('/', imageUpload.single('photo'), async (req, res, next) => {
-  if (!req.body.name) {
-    res.status(400).send({ error: 'name is required.' });
-    return;
-  }
-
-  if (!req.body.name) {
-    res.status(400).send({ error: 'name is required.' });
-    return;
-  }
-
   const mutation: ArtistMutation = {
-    name: req.body.name,
-    photoUrl: req.file ? req.file.filename : null,
-    description: req.body.description,
+    name: req.body.name ?? null,
+    photoUrl: req.file?.filename ?? null,
+    description: req.body.description ?? null,
   };
 
   try {

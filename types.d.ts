@@ -1,12 +1,12 @@
 export interface ArtistMutation {
-  name: string;
-  photoUrl: string | null;
-  description: string | null;
+  name: string?;
+  photoUrl: string?;
+  description: string?;
 }
 
 export interface AlbumMutation {
-  title: string;
-  artist: string;
-  year: number;
-  coverUrl: string | null;
+  title: string?;
+  artist: string?;
+  year: number?;
+  coverUrl: string?;
 }
