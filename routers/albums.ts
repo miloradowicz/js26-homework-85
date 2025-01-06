@@ -1,19 +1,18 @@
 import express from 'express';
-import { Types } from 'mongoose';
 
 import { imageUpload } from '../multer';
 import { AlbumMutation } from '../types';
-import Album from '../models/Album';
 import Artist from '../models/Artist';
+import Album from '../models/Album';
 
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {
-  const query = req.query.artist as string | undefined;
+  const artist = req.query.artist as string | undefined;
 
-  if (query) {
+  if (artist) {
     try {
-      if (!(await Artist.findById(query))) {
+      if (!(await Artist.findById(artist))) {
         res.status(404).send({ error: 'artist not found.' });
         return;
       }
@@ -28,7 +27,7 @@ router.get('/', async (req, res, next) => {
   }
 
   try {
-    const albums = await Album.find(query ? { artist: query } : {});
+    const albums = await Album.find(artist ? { artist } : {});
     res.send(albums);
   } catch (e) {
     if (e instanceof Error) {
@@ -68,8 +67,8 @@ router.post('/', imageUpload.single('cover'), async (req, res, next) => {
   };
 
   try {
-    const artist = await Album.create(mutation);
-    res.send(artist);
+    const album = await Album.create(mutation);
+    res.send(album);
   } catch (e) {
     if (e instanceof Error) {
       res.status(400).send({ error: e.message });

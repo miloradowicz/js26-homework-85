@@ -10,3 +10,9 @@ export interface AlbumMutation {
   year: number?;
   coverUrl: string?;
 }
+
+export interface TrackMutation {
+  title: string?;
+  album: string?;
+  length: string?;
+}
