@@ -1,9 +1,10 @@
 import express from 'express';
 import { Types } from 'mongoose';
 
+import { imageUpload } from '../multer';
+import { AlbumMutation } from '../types';
 import Album from '../models/Album';
 import Artist from '../models/Artist';
-import { AlbumMutation } from '../types';
 
 const router = express.Router();
 
@@ -42,10 +43,13 @@ router.get('/:id', async (req, res, next) => {
   const id = req.params.id;
 
   try {
-    const album = await Album.findById(id, null, {
-      populate: { path: 'Artist' },
-    });
-    res.send(album);
+    const album = await Album.findById(id).populate('artist');
+
+    if (album) {
+      res.send(album);
+    } else {
+      res.status(404).send({ error: 'album not found.' });
+    }
   } catch (e) {
     if (e instanceof Error) {
       res.status(400).send({ error: e.message });
@@ -55,39 +59,16 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-router.post('/', async (req, res, next) => {
-  const missing: string[] = [];
-
-  if (!req.body.title) {
-    missing.push('title');
-  }
-
-  if (!req.body.artistId) {
-    missing.push('artist');
-  }
-
-  if (!req.body.year) {
-    missing.push('year');
-  }
-
-  if (missing.length) {
-    res.status(400).send({
-      error: `${missing.join(', ')} ${
-        missing.length === 1 ? 'is' : 'are'
-      } required.`,
-    });
-    return;
-  }
-
+router.post('/', imageUpload.single('cover'), async (req, res, next) => {
   const mutation: AlbumMutation = {
-    title: req.body.title,
-    artist: req.body.artist,
-    year: req.body.year,
-    coverUrl: req.file ? req.file.filename : null,
+    title: req.body.title ?? null,
+    artist: req.body.artist ?? null,
+    year: req.body.year ?? null,
+    coverUrl: req.file?.filename ?? null,
   };
 
   try {
-    const artist = await Artist.create(mutation);
+    const artist = await Album.create(mutation);
     res.send(artist);
   } catch (e) {
     if (e instanceof Error) {
