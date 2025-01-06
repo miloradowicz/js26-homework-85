@@ -6,7 +6,7 @@ export interface ArtistMutation {
 
 export interface AlbumMutation {
   title: string;
-  artistId: string;
+  artist: string;
   year: number;
   coverUrl: string | null;
 }
