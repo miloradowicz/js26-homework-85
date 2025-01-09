@@ -12,46 +12,25 @@ router.get('/', async (req, res, next) => {
   const artist = req.query.artist as string | undefined;
   const album = req.query.album as string | undefined;
 
-  if (album && artist) {
-    res
-      .status(400)
-      .send({ error: 'either album, or artist, or neither is allowed.' });
-    return;
-  }
-
-  if (artist) {
-    try {
-      if (!(await Artist.findById(artist))) {
-        res.status(404).send({ error: 'artist not found.' });
-        return;
-      }
-    } catch (e) {
-      if (e instanceof Error) {
-        res.status(400).send({ error: e.message });
-      } else {
-        next(e);
-      }
-      return;
-    }
-  }
-
-  if (album) {
-    try {
-      if (!(await Album.findById(album))) {
-        res.status(404).send({ error: 'album not found.' });
-        return;
-      }
-    } catch (e) {
-      if (e instanceof Error) {
-        res.status(400).send({ error: e.message });
-      } else {
-        next(e);
-      }
-      return;
-    }
-  }
-
   try {
+    if (album && artist) {
+      return void res
+        .status(400)
+        .send({ error: 'either album, or artist, or neither is allowed.' });
+    }
+
+    if (artist) {
+      if (!(await Artist.findById(artist))) {
+        return void res.status(404).send({ error: 'artist not found.' });
+      }
+    }
+
+    if (album) {
+      if (!(await Album.findById(album))) {
+        return void res.status(404).send({ error: 'album not found.' });
+      }
+    }
+
     const tracks = await Track.find(
       artist ? { album: await Album.find({ artist }) } : album ? { album } : {}
     );

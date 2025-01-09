@@ -1,19 +1,15 @@
 import express from 'express';
 
-import { UserMutation } from '../types';
 import User from '../models/User';
-import Artist from '../models/Artist';
 
 const router = express.Router();
 
 router.post('/', async (req, res, next) => {
-  const mutation: UserMutation = {
-    username: req.body.username ?? null,
-    password: req.body.password ?? null,
-  };
-
   try {
-    const user = new User(mutation);
+    const user = new User({
+      username: req.body.username,
+      password: req.body.password,
+    });
     user.generateToken();
     await user.save();
     res.send(user);
@@ -27,25 +23,14 @@ router.post('/', async (req, res, next) => {
 });
 
 router.post('/sessions', async (req, res, next) => {
-  const mutation: UserMutation = {
-    username: req.body.username ?? null,
-    password: req.body.password ?? null,
-  };
-
   try {
-    if (!mutation.username || !mutation.password) {
-      return void res
-        .status(400)
-        .send({ error: 'username and password are required.' });
-    }
-
     const user = await User.findOne({ username: req.body.username });
 
     if (!user) {
       return void res.status(400).send({ error: 'user not found.' });
     }
 
-    if (!(await user.checkPassword(mutation.password))) {
+    if (!(await user.checkPassword(req.body.password))) {
       return void res.status(400).send({ error: 'incorrect password.' });
     }
 

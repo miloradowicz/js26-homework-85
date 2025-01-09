@@ -1,14 +1,12 @@
 import express from 'express';
 
-import { imageUpload } from '../multer';
 import User from '../models/User';
 import TrackHistory from '../models/TrackHistory';
 
 const router = express.Router();
 
-router.post('/', imageUpload.single('photo'), async (req, res, next) => {
+router.post('/', async (req, res, next) => {
   const token = req.get('Authorization');
-  const track: string | null = req.body.track ?? null;
 
   try {
     const user = await User.findOne({ token });
@@ -17,7 +15,10 @@ router.post('/', imageUpload.single('photo'), async (req, res, next) => {
       return void res.status(401).send({ error: 'Invalid token.' });
     }
 
-    const trackHistory = await TrackHistory.create({ track, user: user._id });
+    const trackHistory = await TrackHistory.create({
+      track: req.body.track,
+      user: user._id,
+    });
     res.send(trackHistory);
   } catch (e) {
     if (e instanceof Error) {
