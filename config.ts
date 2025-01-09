@@ -6,6 +6,7 @@ const config = {
     host: 'mongodb://localhost',
     db: 'miloradowicz-hw-82',
   },
+  saltWorkFactor: 10,
   rootPath: __dirname,
   publicPath: 'public',
 };

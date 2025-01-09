@@ -16,3 +16,8 @@ export interface TrackMutation {
   album: string?;
   length: string?;
 }
+
+export interface UserMutation {
+  username: string?;
+  password: string?;
+}
