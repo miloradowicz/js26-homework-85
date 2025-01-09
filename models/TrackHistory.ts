@@ -29,7 +29,6 @@ const schema = new mongoose.Schema(
       required: true,
       default: Date.now,
     },
-    __v: { type: Number, select: false },
   },
   {
     strict: 'throw',
