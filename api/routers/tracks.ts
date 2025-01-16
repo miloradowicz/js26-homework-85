@@ -1,10 +1,9 @@
 import express from 'express';
+import { Error } from 'mongoose';
 
-import { imageUpload } from '../multer';
-import { TrackMutation } from '../types';
+import Artist from '../models/Artist';
 import Album from '../models/Album';
 import Track from '../models/Track';
-import Artist from '../models/Artist';
 
 const router = express.Router();
 
@@ -14,9 +13,7 @@ router.get('/', async (req, res, next) => {
 
   try {
     if (album && artist) {
-      return void res
-        .status(400)
-        .send({ error: 'either album, or artist, or neither is allowed.' });
+      return void res.status(400).send({ error: 'either album, or artist, or neither is allowed.' });
     }
 
     if (artist) {
@@ -31,9 +28,7 @@ router.get('/', async (req, res, next) => {
       }
     }
 
-    const tracks = await Track.find(
-      artist ? { album: await Album.find({ artist }) } : album ? { album } : {}
-    );
+    const tracks = await Track.find(artist ? { album: await Album.find({ artist }) } : album ? { album } : {});
     res.send(tracks);
   } catch (e) {
     if (e instanceof Error) {
@@ -45,18 +40,16 @@ router.get('/', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-  const mutation: TrackMutation = {
-    title: req.body.title ?? null,
-    album: req.body.album ?? null,
-    length: req.body.length ?? null,
-  };
-
   try {
-    const track = await Track.create(mutation);
+    const track = await Track.create({
+      title: req.body.title ?? null,
+      album: req.body.album ?? null,
+      length: req.body.length ?? null,
+    });
     res.send(track);
   } catch (e) {
-    if (e instanceof Error) {
-      res.status(400).send({ error: e.message });
+    if (e instanceof Error.ValidationError) {
+      res.status(400).send(e);
     } else {
       next(e);
     }

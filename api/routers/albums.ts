@@ -1,7 +1,7 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
+import { Error } from 'mongoose';
 
 import { imageUpload } from '../multer';
-import { AlbumMutation } from '../types';
 import Artist from '../models/Artist';
 import Album from '../models/Album';
 
@@ -25,7 +25,6 @@ router.get('/', async (req, res, next) => {
     } else {
       next(e);
     }
-    return;
   }
 });
 
@@ -49,20 +48,18 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-router.post('/', imageUpload.single('cover'), async (req, res, next) => {
-  const mutation: AlbumMutation = {
-    title: req.body.title ?? null,
-    artist: req.body.artist ?? null,
-    year: req.body.year ?? null,
-    coverUrl: req.file?.filename ?? null,
-  };
-
+router.post('/', imageUpload.single('cover'), async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const album = await Album.create(mutation);
+    const album = await Album.create({
+      title: req.body.title ?? null,
+      artist: req.body.artist ?? null,
+      year: req.body.year ?? null,
+      coverUrl: req.file?.filename ?? null,
+    });
     res.send(album);
   } catch (e) {
-    if (e instanceof Error) {
-      res.status(400).send({ error: e.message });
+    if (e instanceof Error.ValidationError) {
+      res.status(400).send(e);
     } else {
       next(e);
     }

@@ -1,7 +1,7 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
+import { Error } from 'mongoose';
 
 import { imageUpload } from '../multer';
-import { ArtistMutation } from '../types';
 import Artist from '../models/Artist';
 
 const router = express.Router();
@@ -19,19 +19,17 @@ router.get('/', async (_req, res, next) => {
   }
 });
 
-router.post('/', imageUpload.single('photo'), async (req, res, next) => {
-  const mutation: ArtistMutation = {
-    name: req.body.name ?? null,
-    photoUrl: req.file?.filename ?? null,
-    description: req.body.description ?? null,
-  };
-
+router.post('/', imageUpload.single('photo'), async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const artist = await Artist.create(mutation);
+    const artist = await Artist.create({
+      name: req.body.name ?? null,
+      photoUrl: req.file?.filename ?? null,
+      description: req.body.description ?? null,
+    });
     res.send(artist);
   } catch (e) {
-    if (e instanceof Error) {
-      res.status(400).send({ error: e.message });
+    if (e instanceof Error.ValidationError) {
+      res.status(400).send(e);
     } else {
       next(e);
     }
