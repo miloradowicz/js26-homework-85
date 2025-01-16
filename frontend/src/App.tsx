@@ -4,6 +4,7 @@ import { Container } from '@mui/material';
 import Page404 from './containers/Page404/Page404';
 import ArtistsViewer from './containers/ArtistsViewer/ArtistsViewer';
 import AlbumsViewer from './containers/AlbumsViewer/AlbumsViewer';
+import TracksViewer from './containers/TracksViewer/TracksViewer';
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
           <Route path='/' element={<ArtistsViewer />} />
           <Route path='/artist/:id' element={<AlbumsViewer />} />
           <Route path='*' element={<Page404 />} />
+          <Route path='/album/:id' element={<TracksViewer />} />
         </Routes>
       </Container>
     </>

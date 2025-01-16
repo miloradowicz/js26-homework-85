@@ -35,7 +35,7 @@ export interface TrackSet {
 export interface Track {
   _id: string;
   title: string;
-  album: Album;
+  album: string;
   trackNum: number;
   length: string | null;
 }

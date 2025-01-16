@@ -1,22 +1,22 @@
 import { Backdrop, Box, CircularProgress, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../../api';
-import { AlbumSet } from '../../types';
+import { TrackSet } from '../../types';
 import { enqueueSnackbar } from 'notistack';
+import TrackList from '../../components/TrackList/TrackList';
 import { useParams } from 'react-router-dom';
-import AlbumList from '../../components/AlbumList/AlbumList';
 
-const ArtistViewer = () => {
+const TracksViewer = () => {
   const { id } = useParams();
 
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<AlbumSet>();
+  const [data, setData] = useState<TrackSet>();
 
-  const loadAlbums = useCallback(async () => {
+  const loadArtists = useCallback(async () => {
     try {
       setLoading(true);
 
-      const { data } = await api.get<AlbumSet>('albums', { params: { artist: id } });
+      const { data } = await api.get<TrackSet>('tracks', { params: { album: id } });
 
       setData(data);
     } catch (e) {
@@ -31,8 +31,8 @@ const ArtistViewer = () => {
   }, [id]);
 
   useEffect(() => {
-    loadAlbums();
-  }, [loadAlbums]);
+    loadArtists();
+  }, [loadArtists]);
 
   return (
     <>
@@ -41,12 +41,12 @@ const ArtistViewer = () => {
       </Backdrop>
       <Box sx={{ p: 2 }}>
         <Typography gutterBottom variant='h6' component='div'>
-          {data?.artist?.name}
+          {data?.album?.artist.name} - {data?.album?.title}
         </Typography>
-        <AlbumList list={data?.albums ?? []} />
+        <TrackList list={data?.tracks ?? []} />
       </Box>
     </>
   );
 };
 
-export default ArtistViewer;
+export default TracksViewer;
