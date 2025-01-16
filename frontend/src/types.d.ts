@@ -8,10 +8,28 @@ export interface Artist {
 export interface Album {
   _id: string;
   title: string;
-  artist: Artist;
+  artist: string;
   year: number;
   coverUrl: string | null;
   trackCount?: number;
+}
+
+export type AlbumBody = Omit<Album, 'artist'>;
+
+export type TrackBody = Omit<Track, 'album'>;
+
+export type PopulatedAlbum = Omit<Album, 'artist'> & {
+  artist: Artist;
+};
+
+export interface AlbumSet {
+  albums: AlbumBody[] | Album[];
+  artist?: Artist;
+}
+
+export interface TrackSet {
+  tracks: TrackBody[] | Track[];
+  album?: PopulatedAlbum;
 }
 
 export interface Track {

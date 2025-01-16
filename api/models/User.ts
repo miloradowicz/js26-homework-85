@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
-
-import config from '../config';
 import { randomUUID } from 'crypto';
 
-interface Fields {
+import config from '../config';
+
+export interface Fields {
+  _id: mongoose.Types.ObjectId;
   username: string;
   password: string;
   token: string;

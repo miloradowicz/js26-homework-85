@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { Error } from 'mongoose';
+import { Error, Types } from 'mongoose';
 
 import { imageUpload } from '../multer';
 import Artist from '../models/Artist';
@@ -8,17 +8,69 @@ import Album from '../models/Album';
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {
-  const artist = req.query.artist as string | undefined;
+  const _artist = req.query.artist as string | undefined;
 
   try {
-    if (artist) {
-      if (!(await Artist.findById(artist))) {
+    if (_artist) {
+      const artist = await Artist.findById(_artist);
+
+      if (!artist) {
         return void res.status(404).send({ error: 'artist not found.' });
       }
 
-      const albums = await Album.find(artist ? { artist } : {});
-      res.send(albums);
+      const albums = await Album.aggregate([
+        {
+          $match: { artist: new Types.ObjectId(_artist) },
+        },
+        {
+          $lookup: {
+            from: 'tracks',
+            localField: '_id',
+            foreignField: 'album',
+            as: 'tracks',
+          },
+        },
+        {
+          $unwind: '$tracks',
+        },
+        {
+          $group: {
+            _id: {
+              _id: '$_id',
+              title: '$title',
+              year: '$year',
+              coverUrl: '$coverUrl',
+            },
+            trackCount: { $count: {} },
+          },
+        },
+        {
+          $replaceWith: {
+            $setField: { field: 'title', input: '$$ROOT', value: '$_id.title' },
+          },
+        },
+        {
+          $replaceWith: {
+            $setField: { field: 'year', input: '$$ROOT', value: '$_id.year' },
+          },
+        },
+        {
+          $replaceWith: {
+            $setField: { field: 'coverUrl', input: '$$ROOT', value: '$_id.coverUrl' },
+          },
+        },
+        {
+          $replaceWith: {
+            $setField: { field: '_id', input: '$$ROOT', value: '$_id._id' },
+          },
+        },
+      ]).sort('year');
+
+      return void res.send({ albums, artist });
     }
+
+    const albums = await Album.find({});
+    res.send({ albums });
   } catch (e) {
     if (e instanceof Error) {
       res.status(400).send({ error: e.message });

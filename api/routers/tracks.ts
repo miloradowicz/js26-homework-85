@@ -1,5 +1,5 @@
 import express from 'express';
-import { Error } from 'mongoose';
+import { Error, Types } from 'mongoose';
 
 import Artist from '../models/Artist';
 import Album from '../models/Album';
@@ -8,28 +8,23 @@ import Track from '../models/Track';
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {
-  const artist = req.query.artist as string | undefined;
-  const album = req.query.album as string | undefined;
+  const _album = req.query.album as string | undefined;
 
   try {
-    if (album && artist) {
-      return void res.status(400).send({ error: 'either album, or artist, or neither is allowed.' });
-    }
+    if (_album) {
+      const album = await Album.findById(_album).populate('artist');
 
-    if (artist) {
-      if (!(await Artist.findById(artist))) {
-        return void res.status(404).send({ error: 'artist not found.' });
-      }
-    }
-
-    if (album) {
-      if (!(await Album.findById(album))) {
+      if (!album) {
         return void res.status(404).send({ error: 'album not found.' });
       }
+
+      const tracks = await Track.find({ album: album._id }).sort('trackNum');
+
+      return void res.send({ tracks, album });
     }
 
-    const tracks = await Track.find(artist ? { album: await Album.find({ artist }) } : album ? { album } : {});
-    res.send(tracks);
+    const tracks = await Track.find(_album ? { album: _album } : {});
+    res.send({ tracks });
   } catch (e) {
     if (e instanceof Error) {
       res.status(400).send({ error: e.message });
