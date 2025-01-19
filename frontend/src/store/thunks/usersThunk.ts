@@ -3,6 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { api } from '../../api';
 import { AuthenticationError, Session, User, SignInMutation, SignUpMutation, ValidationError } from '../../types';
 import { isAxiosError } from 'axios';
+import { RootState } from '../../app/store';
 
 export const login = createAsyncThunk<Session, SignInMutation, { rejectValue: AuthenticationError }>('users/login', async (mutation, { rejectWithValue }) => {
   try {
@@ -30,4 +31,10 @@ export const register = createAsyncThunk<User, SignUpMutation, { rejectValue: Va
 
     throw e;
   }
+});
+
+export const logout = createAsyncThunk<void, void, { state: RootState }>('users/logout', async (_, { getState }) => {
+  const token = getState().users.user.token;
+
+  await api.delete('users/sessions', { headers: { Authorization: token } });
 });

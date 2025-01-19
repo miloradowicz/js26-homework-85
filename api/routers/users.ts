@@ -2,6 +2,7 @@ import express from 'express';
 import { Error } from 'mongoose';
 
 import User from '../models/User';
+import auth, { RequestWithUser } from '../middleware/auth';
 
 const router = express.Router();
 
@@ -21,6 +22,17 @@ router.post('/', async (req, res, next) => {
       next(e);
     }
   }
+});
+
+router.delete('/sessions', auth, async (_req, res, next) => {
+  const req = _req as RequestWithUser;
+
+  const user = await User.findById(req.user._id);
+
+  user?.generateToken();
+  await user?.save();
+
+  res.send({ message: 'Logged out' });
 });
 
 router.post('/sessions', async (req, res, next) => {

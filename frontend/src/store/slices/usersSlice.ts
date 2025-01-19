@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { login, register } from '../thunks/usersThunk';
-import { User, ValidationError } from '../../types';
+import { login, logout, register } from '../thunks/usersThunk';
+import { AuthenticationError, User, ValidationError } from '../../types';
 import { RootState } from '../../app/store';
 
 interface State {
   user: User | null;
   loading: boolean;
-  loginError: ValidationError | null;
+  loginError: AuthenticationError | null;
   registrationError: ValidationError | null;
 }
 
@@ -48,6 +48,9 @@ const slice = createSlice({
       .addCase(register.rejected, (state, { payload: error }) => {
         state.loading = false;
         state.registrationError = error ?? null;
+      })
+      .addCase(logout.fulfilled, (state) => {
+        state.user = null;
       });
   },
 });

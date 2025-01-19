@@ -14,7 +14,7 @@ const SignIn = () => {
   const handleSubmit = async (data: SignInMutation) => {
     try {
       await dispatch(login(data)).unwrap();
-      navigate('/');
+      navigate(-1);
     } catch (e) {
       if (!(e as ValidationError).errors && (e as GenericError).error) {
         enqueueSnackbar((e as GenericError).error, { variant: 'error' });

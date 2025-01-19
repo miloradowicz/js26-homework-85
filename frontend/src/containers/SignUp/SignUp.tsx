@@ -14,7 +14,7 @@ const SignUp = () => {
   const handleSubmit = async (data: SignUpMutation) => {
     try {
       await dispatch(register(data)).unwrap();
-      navigate('/');
+      navigate(-1);
     } catch (e) {
       if (!(e as AuthenticationError).errors && (e as GenericError).error) {
         enqueueSnackbar((e as GenericError).error, { variant: 'error' });

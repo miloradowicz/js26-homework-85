@@ -2,6 +2,7 @@ import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useAppSelector } from '../../../app/hooks';
 import { selectUser } from '../../../store/slices/usersSlice';
+import UserMenu from '../UserMenu/UserMenu';
 
 const Header = () => {
   const user = useAppSelector(selectUser);
@@ -13,12 +14,7 @@ const Header = () => {
           Spuddify
         </Typography>
         {user ? (
-          <Box display='flex' gap={2} alignItems='center'>
-            {`Welcome, ${user.username}`}
-            <Button component={Link} variant='contained' color='info' to='/track_history'>
-              Track history
-            </Button>
-          </Box>
+          <UserMenu user={user} />
         ) : (
           <Box display='flex' gap={1}>
             <Button component={Link} variant='contained' color='info' to='/login'>

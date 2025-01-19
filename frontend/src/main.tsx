@@ -7,17 +7,20 @@ import '@fontsource/roboto/cyrillic.css';
 
 import App from './App.tsx';
 import { SnackbarProvider } from 'notistack';
-import { store } from './app/store.ts';
+import { persistor, store } from './app/store.ts';
+import { PersistGate } from 'redux-persist/lib/integration/react';
 
 createRoot(document.getElementById('root')!).render(
   <>
     <CssBaseline />
     <Provider store={store}>
-      <BrowserRouter>
-        <SnackbarProvider autoHideDuration={3000} anchorOrigin={{ vertical: 'top', horizontal: 'center' }} maxSnack={1}>
-          <App />
-        </SnackbarProvider>
-      </BrowserRouter>
+      <PersistGate persistor={persistor}>
+        <BrowserRouter>
+          <SnackbarProvider autoHideDuration={3000} anchorOrigin={{ vertical: 'top', horizontal: 'center' }} maxSnack={1}>
+            <App />
+          </SnackbarProvider>
+        </BrowserRouter>
+      </PersistGate>
     </Provider>
   </>
 );
