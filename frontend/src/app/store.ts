@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { users } from '../store/slices/usersSlice';
 import storage from 'redux-persist/lib/storage';
 import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
@@ -9,10 +9,12 @@ const usersPersistConfig = {
   whitelist: ['user'],
 };
 
+const reducer = combineReducers({
+  users: persistReducer(usersPersistConfig, users),
+});
+
 export const store = configureStore({
-  reducer: {
-    users: persistReducer(usersPersistConfig, users),
-  },
+  reducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {

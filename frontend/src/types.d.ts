@@ -86,3 +86,12 @@ export interface SignUpMutation {
   username: string;
   password: string;
 }
+
+export interface TrackHistoryRecord {
+  _id: string;
+  track: TrackBody;
+  album: AlbumBody;
+  artist: Artist;
+  user: string;
+  date: string;
+}

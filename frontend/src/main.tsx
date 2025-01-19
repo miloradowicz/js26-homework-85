@@ -9,6 +9,10 @@ import App from './App.tsx';
 import { SnackbarProvider } from 'notistack';
 import { persistor, store } from './app/store.ts';
 import { PersistGate } from 'redux-persist/lib/integration/react';
+import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+
+dayjs.extend(localizedFormat);
 
 createRoot(document.getElementById('root')!).render(
   <>

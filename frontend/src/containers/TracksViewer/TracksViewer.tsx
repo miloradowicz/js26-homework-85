@@ -5,12 +5,30 @@ import { TrackSet } from '../../types';
 import { enqueueSnackbar } from 'notistack';
 import TrackList from '../../components/TrackList/TrackList';
 import { useParams } from 'react-router-dom';
+import { useAppSelector } from '../../app/hooks';
+import { selectUser } from '../../store/slices/usersSlice';
 
 const TracksViewer = () => {
   const { id } = useParams();
+  const user = useAppSelector(selectUser);
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<TrackSet>();
+
+  const handlePlay = useCallback(
+    async (id: string) => {
+      try {
+        await api.post<TrackSet>('track_history', { track: id }, { headers: { Authorization: user.token } });
+      } catch (e) {
+        if (e instanceof Error) {
+          enqueueSnackbar(e.message, { variant: 'error' });
+        } else {
+          console.error(e);
+        }
+      }
+    },
+    [user]
+  );
 
   const loadArtists = useCallback(async () => {
     try {
@@ -43,7 +61,7 @@ const TracksViewer = () => {
         <Typography gutterBottom variant='h6' component='div'>
           {data?.album?.artist.name} - {data?.album?.title}
         </Typography>
-        <TrackList list={data?.tracks ?? []} />
+        <TrackList list={data?.tracks ?? []} onPlay={handlePlay} />
       </Box>
     </>
   );
