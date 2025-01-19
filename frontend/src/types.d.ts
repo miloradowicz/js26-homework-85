@@ -56,3 +56,33 @@ export interface ValidationError {
   name: string;
   _message: string;
 }
+
+export interface AuthenticationError {
+  errors: {
+    [key: string]: {
+      name: string;
+      message: string;
+    };
+  };
+}
+
+export interface User {
+  _id: string;
+  username: string;
+  token: string;
+}
+
+export interface Session {
+  message: string;
+  user: User;
+}
+
+export interface SignInMutation {
+  username: string;
+  password: string;
+}
+
+export interface SignUpMutation {
+  username: string;
+  password: string;
+}

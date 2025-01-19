@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { Error, Types } from 'mongoose';
 
-import { imageUpload } from '../multer';
+import { imageUpload } from '../middleware/multer';
 import Artist from '../models/Artist';
 import Album from '../models/Album';
 

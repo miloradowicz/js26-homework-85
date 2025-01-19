@@ -1,4 +1,5 @@
 import express from 'express';
+import { Error } from 'mongoose';
 
 import User from '../models/User';
 
@@ -14,8 +15,8 @@ router.post('/', async (req, res, next) => {
     await user.save();
     res.send(user);
   } catch (e) {
-    if (e instanceof Error) {
-      res.status(400).send({ error: e.message });
+    if (e instanceof Error.ValidationError) {
+      res.status(400).send(e);
     } else {
       next(e);
     }
@@ -27,17 +28,17 @@ router.post('/sessions', async (req, res, next) => {
     const user = await User.findOne({ username: req.body.username });
 
     if (!user) {
-      return void res.status(400).send({ error: 'user not found.' });
+      return void res.status(400).send({ errors: { username: { name: 'username', message: 'user not found.' } } });
     }
 
     if (!(await user.checkPassword(req.body.password))) {
-      return void res.status(400).send({ error: 'incorrect password.' });
+      return void res.status(400).send({ errors: { password: { name: 'password', message: 'incorrect password.' } } });
     }
 
     user.generateToken();
     await user.save();
 
-    return void res.send({ message: 'Authenticated.', user });
+    return void res.send({ message: 'Authenticated', user });
   } catch (e) {
     if (e instanceof Error) {
       res.status(400).send({ error: e.message });

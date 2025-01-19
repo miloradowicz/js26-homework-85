@@ -1,28 +1,23 @@
 import express from 'express';
+import { Error } from 'mongoose';
 
-import User from '../models/User';
+import auth, { RequestWithUser } from '../middleware/auth';
 import TrackHistory from '../models/TrackHistory';
 
 const router = express.Router();
 
-router.post('/', async (req, res, next) => {
-  const token = req.get('Authorization');
+router.post('/', auth, async (_req, res, next) => {
+  const req = _req as RequestWithUser;
 
   try {
-    const user = await User.findOne({ token });
-
-    if (!user) {
-      return void res.status(401).send({ error: 'Invalid token.' });
-    }
-
     const trackHistory = await TrackHistory.create({
-      track: req.body.track,
-      user: user._id,
+      track: req.body.track ?? null,
+      user: req.user._id ?? null,
     });
     res.send(trackHistory);
   } catch (e) {
-    if (e instanceof Error) {
-      res.status(400).send({ error: e.message });
+    if (e instanceof Error.ValidationError) {
+      res.status(400).send(e);
     } else {
       next(e);
     }
