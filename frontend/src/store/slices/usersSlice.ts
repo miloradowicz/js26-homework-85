@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { login, register } from '../thunks/usersThunk';
-import { Error, User, ValidationError } from '../../types';
+import { User, ValidationError } from '../../types';
 import { RootState } from '../../app/store';
 
 interface State {
   user: User | null;
   loading: boolean;
-  loginError: Error | null;
+  loginError: ValidationError | null;
   registrationError: ValidationError | null;
 }
 

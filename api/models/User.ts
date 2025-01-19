@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 import bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
 
@@ -18,9 +18,19 @@ interface Methods {
 
 type Model = mongoose.Model<Fields, {}, Methods>;
 
-const schema = new mongoose.Schema<Fields, Model, Methods>(
+const schema = new mongoose.Schema<HydratedDocument<Fields>, Model, Methods>(
   {
-    username: { type: String, required: true, unique: true },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      validate: {
+        validator: async function (this: HydratedDocument<Fields>, value: string): Promise<boolean> {
+          return !this.isModified('username') || !(await User.findOne({ username: value }));
+        },
+        message: 'username already taken',
+      },
+    },
     password: { type: String, required: true },
     token: { type: String, required: true },
   },
@@ -54,4 +64,6 @@ schema.methods.generateToken = function () {
   this.token = randomUUID();
 };
 
-export default mongoose.model<Fields, Model>('User', schema);
+const User = mongoose.model<HydratedDocument<Fields>, Model>('User', schema);
+
+export default User;

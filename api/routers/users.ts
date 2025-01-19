@@ -28,11 +28,11 @@ router.post('/sessions', async (req, res, next) => {
     const user = await User.findOne({ username: req.body.username });
 
     if (!user) {
-      return void res.status(400).send({ errors: { username: { name: 'username', message: 'user not found.' } } });
+      return void res.status(401).send({ errors: { username: { name: 'username', message: 'user not found.' } } });
     }
 
     if (!(await user.checkPassword(req.body.password))) {
-      return void res.status(400).send({ errors: { password: { name: 'password', message: 'incorrect password.' } } });
+      return void res.status(401).send({ errors: { password: { name: 'password', message: 'incorrect password.' } } });
     }
 
     user.generateToken();

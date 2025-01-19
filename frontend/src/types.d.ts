@@ -40,7 +40,7 @@ export interface Track {
   length: string | null;
 }
 
-export interface Error {
+export interface GenericError {
   error: string;
 }
 

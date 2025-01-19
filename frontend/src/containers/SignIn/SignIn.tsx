@@ -1,22 +1,22 @@
 import { Box, Container, Grid2 as Grid, Link } from '@mui/material';
+import SignInForm from '../../components/SignInForm/SignInForm';
+import { GenericError, SignInMutation, ValidationError } from '../../types';
 import { useAppDispatch } from '../../app/hooks';
-import { register } from '../../store/thunks/usersThunk';
+import { login } from '../../store/thunks/usersThunk';
 import { Link as routerLink, useNavigate } from 'react-router-dom';
-import SignUpForm from '../../components/SignUpForm/SignUpForm';
-import { AuthenticationError, GenericError, SignUpMutation } from '../../types';
 import { useSnackbar } from 'notistack';
 
-const SignUp = () => {
+const SignIn = () => {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const handleSubmit = async (data: SignUpMutation) => {
+  const handleSubmit = async (data: SignInMutation) => {
     try {
-      await dispatch(register(data)).unwrap();
+      await dispatch(login(data)).unwrap();
       navigate('/');
     } catch (e) {
-      if (!(e as AuthenticationError).errors && (e as GenericError).error) {
+      if (!(e as ValidationError).errors && (e as GenericError).error) {
         enqueueSnackbar((e as GenericError).error, { variant: 'error' });
       } else if ((e as Error).message) {
         enqueueSnackbar((e as Error).message, { variant: 'error' });
@@ -36,11 +36,11 @@ const SignUp = () => {
           alignItems: 'center',
         }}
       >
-        <SignUpForm onSubmit={handleSubmit} />
+        <SignInForm onSubmit={handleSubmit} />
         <Grid container justifyContent='flex-end'>
           <Grid>
-            <Link component={routerLink} variant='body2' to='/login'>
-              Already have an account? Sign in
+            <Link component={routerLink} variant='body2' to='/register'>
+              Not registered yet? Sign up
             </Link>
           </Grid>
         </Grid>
@@ -49,4 +49,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignIn;

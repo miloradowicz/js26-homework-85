@@ -1,7 +1,6 @@
 import express from 'express';
-import { Error, Types } from 'mongoose';
+import { Error } from 'mongoose';
 
-import Artist from '../models/Artist';
 import Album from '../models/Album';
 import Track from '../models/Track';
 

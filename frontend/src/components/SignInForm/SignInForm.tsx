@@ -1,7 +1,7 @@
 import { Box, Button, Grid2 as Grid, TextField, Typography } from '@mui/material';
 import { ChangeEventHandler, FC, FormEventHandler, useState } from 'react';
 import { useAppSelector } from '../../app/hooks';
-import { selectLoading, selectRegistrationError } from '../../store/slices/usersSlice';
+import { selectLoading, selectLoginError } from '../../store/slices/usersSlice';
 
 interface Props {
   onSubmit: (data: FormData) => Promise<void>;
@@ -17,15 +17,15 @@ const initialData: FormData = {
   password: '',
 };
 
-const SignUpForm: FC<Props> = ({ onSubmit }) => {
+const SignInForm: FC<Props> = ({ onSubmit }) => {
   const loading = useAppSelector(selectLoading);
-  const registrationError = useAppSelector(selectRegistrationError);
+  const loginError = useAppSelector(selectLoginError);
 
   const [data, setData] = useState<FormData>(initialData);
 
   const getFieldError = (fieldName: string) => {
     try {
-      return registrationError?.errors[fieldName].message;
+      return loginError?.errors[fieldName].message;
     } catch {
       return undefined;
     }
@@ -45,7 +45,7 @@ const SignUpForm: FC<Props> = ({ onSubmit }) => {
   return (
     <>
       <Typography component='h1' variant='h5'>
-        Sign Up
+        Sign In
       </Typography>
       <Box component='form' noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
         <Grid container spacing={2}>
@@ -78,11 +78,11 @@ const SignUpForm: FC<Props> = ({ onSubmit }) => {
           </Grid>
         </Grid>
         <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }} loading={loading}>
-          Sign Up
+          Sign In
         </Button>
       </Box>
     </>
   );
 };
 
-export default SignUpForm;
+export default SignInForm;
