@@ -18,6 +18,8 @@ const App = () => {
           <Route path='/' element={<ArtistsViewer />} />
           <Route path='/artist/:id' element={<AlbumsViewer />} />
           <Route path='/album/:id' element={<TracksViewer />} />
+          <Route path='/artist/not-found' element={<Page404 />} />
+          <Route path='/album/not-found' element={<Page404 />} />
           <Route path='/track_history' element={<TrackHistory />} />
           <Route path='/login' element={<SignIn />} />
           <Route path='/register' element={<SignUp />} />

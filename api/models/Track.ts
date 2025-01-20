@@ -16,6 +16,7 @@ const schema = new mongoose.Schema(
     },
     trackNum: { type: Number, required: [true, 'value is required'] },
     length: String,
+    youTubeUrl: String,
     __v: { type: Number, select: false },
   },
   {

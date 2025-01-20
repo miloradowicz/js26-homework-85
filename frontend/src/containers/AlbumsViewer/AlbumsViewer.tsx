@@ -3,11 +3,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { api } from '../../api';
 import { AlbumSet } from '../../types';
 import { enqueueSnackbar } from 'notistack';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import AlbumList from '../../components/AlbumList/AlbumList';
+import { isAxiosError } from 'axios';
 
 const ArtistViewer = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<AlbumSet>();
@@ -20,7 +22,9 @@ const ArtistViewer = () => {
 
       setData(data);
     } catch (e) {
-      if (e instanceof Error) {
+      if (isAxiosError(e) && e.status === 404) {
+        navigate('not-found');
+      } else if (e instanceof Error) {
         enqueueSnackbar(e.message, { variant: 'error' });
       } else {
         console.error(e);
@@ -28,7 +32,7 @@ const ArtistViewer = () => {
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, navigate]);
 
   useEffect(() => {
     loadAlbums();

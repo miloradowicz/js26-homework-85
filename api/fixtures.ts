@@ -5,6 +5,9 @@ import User from './models/User';
 import Artist from './models/Artist';
 import Album from './models/Album';
 import Track from './models/Track';
+import TrackHistory from './models/TrackHistory';
+
+const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max + 1 - min) + min);
 
 (async () => {
   await mongoose.connect(new URL(config.mongo.db, config.mongo.host).href);
@@ -23,15 +26,18 @@ import Track from './models/Track';
     await db.dropCollection('tracks').catch(() => {
       console.log('skipping tracks...');
     });
+    await db.dropCollection('trackhistories').catch(() => {
+      console.log('skipping trackHistories');
+    });
 
-    await User.create(
+    const users = await User.create(
       {
         username: 'newton',
         password: 'apple',
         token: crypto.randomUUID(),
       },
       {
-        username: 'einstein',
+        username: 'planck',
         password: '1234',
         token: crypto.randomUUID(),
       }
@@ -141,12 +147,13 @@ import Track from './models/Track';
       }
     );
 
-    await Track.create(
+    const tracks = await Track.create(
       {
-        title: 'Babymetal Death',
+        title: 'Light and Darkness',
         album: babymetal_babymetal._id,
         trackNum: 1,
         length: '5:46',
+        youTubeUrl: 'https://www.youtube.com/watch?v=VavzD_bTov4',
       },
       {
         title: 'Megitsune',
@@ -159,6 +166,7 @@ import Track from './models/Track';
         album: babymetal_babymetal._id,
         trackNum: 3,
         length: '3:50',
+        youTubeUrl: 'https://www.youtube.com/watch?v=WIKqgE4BwAY&pp=ygUZZ2ltbWUgY2hvY29sYXRlIGJhYnltZXRhbA%3D%3D',
       },
       {
         title: 'Iine!',
@@ -177,6 +185,7 @@ import Track from './models/Track';
         album: babymetal_metalResistance._id,
         trackNum: 1,
         length: '5:18',
+        youTubeUrl: 'https://www.youtube.com/watch?v=zTEYUFgLveY&pp=ygUccm9hZCBvZiByZXNpc3RhbmNlIGJhYnltZXRhbA%3D%3D',
       },
       {
         title: 'Karate',
@@ -232,6 +241,7 @@ import Track from './models/Track';
         album: babymetal_metalGalaxy._id,
         trackNum: 5,
         length: '3:14',
+        youTubeUrl: 'https://www.youtube.com/watch?v=wPJyz0KvudE&pp=ygULT2ghIE1hamluYWk%3D',
       },
 
       {
@@ -239,6 +249,7 @@ import Track from './models/Track';
         album: eluveitie_spirit._id,
         trackNum: 1,
         length: '2:32',
+        youTubeUrl: 'https://www.youtube.com/watch?v=u3q6WWLufO8&pp=ygUQZWx1dmVpdGllIHNwaXJpdA%3D%3D',
       },
       {
         title: 'uis Elveti',
@@ -275,6 +286,7 @@ import Track from './models/Track';
         album: eluveitie_slania._id,
         trackNum: 2,
         length: '4:09',
+        youTubeUrl: 'https://www.youtube.com/watch?v=iijKLHCQw5o&pp=ygUTaW5pcyBtb25hIGVsdXZlaXRpZQ%3D%3D',
       },
       {
         title: 'Gray Sublime Archon',
@@ -299,6 +311,7 @@ import Track from './models/Track';
         album: eluveitie_helvetios._id,
         trackNum: 2,
         length: '4:00',
+        youTubeUrl: 'https://www.youtube.com/watch?v=ohotq66c0ec&pp=ygUJaGVsdmV0aW9z',
       },
       {
         title: 'Luxtos',
@@ -324,6 +337,7 @@ import Track from './models/Track';
         album: dethklok_theDeathalbum._id,
         trackNum: 1,
         length: '3:24',
+        youTubeUrl: 'https://www.youtube.com/watch?v=r-eKJIJXaqE&pp=ygUIZGV0aGtsb2s%3D',
       },
       {
         title: 'Go into the Water',
@@ -348,6 +362,7 @@ import Track from './models/Track';
         album: dethklok_theDeathalbum._id,
         trackNum: 5,
         length: '4:22',
+        youTubeUrl: 'https://www.youtube.com/watch?v=zKlf6oay4FA&pp=ygUQZ28gZm9ydGggYW5kIGRpZQ%3D%3D',
       },
       {
         title: 'Bloodlines',
@@ -366,6 +381,7 @@ import Track from './models/Track';
         album: dethklok_deathalbum2._id,
         trackNum: 3,
         length: '3:59',
+        youTubeUrl: 'https://www.youtube.com/watch?v=DmVkkkuZLeU&pp=ygUXZGV0aGtsb2sgYnVybiB0aGUgZWFydGg%3D',
       },
       {
         title: 'Laser Cannon Death Sentence',
@@ -381,22 +397,25 @@ import Track from './models/Track';
       },
 
       {
-        title: 'Lupercalia',
+        title: 'Feuer',
         album: faun_eden._id,
         trackNum: 1,
         length: '3:15',
+        youTubeUrl: 'https://www.youtube.com/watch?v=-J4AuEj4zHE',
       },
       {
-        title: 'Zeitgeist',
+        title: 'Walpurgisnacht',
         album: faun_eden._id,
         trackNum: 2,
         length: '4:02',
+        youTubeUrl: 'https://www.youtube.com/watch?v=nLgM1QJ3S_I',
       },
       {
-        title: 'Iduna',
+        title: 'Galdra',
         album: faun_eden._id,
         trackNum: 3,
         length: '3:21',
+        youTubeUrl: 'https://www.youtube.com/watch?v=1lFjnlf--Jw',
       },
       {
         title: 'The Butterfly',
@@ -421,6 +440,7 @@ import Track from './models/Track';
         album: faun_luna._id,
         trackNum: 2,
         length: '3:49',
+        youTubeUrl: 'https://www.youtube.com/watch?v=nLgM1QJ3S_I',
       },
       {
         title: 'Brutes Volk',
@@ -451,6 +471,7 @@ import Track from './models/Track';
         album: faun_midgard._id,
         trackNum: 2,
         length: '4:42',
+        youTubeUrl: 'https://www.youtube.com/watch?v=zOvsyamoEDg&pp=ygUPZmVkZXJrbGVpZCBmYXVu',
       },
       {
         title: 'Sonnenreigen (Luchnasad)',
@@ -470,6 +491,18 @@ import Track from './models/Track';
         trackNum: 5,
         length: '6:10',
       }
+    );
+
+    const rndTrack = () => tracks[randomInt(0, tracks.length - 1)];
+    const rndUser = () => users[randomInt(0, users.length - 1)];
+    const rndDate = () => new Date(2020 + randomInt(0, 4), randomInt(1, 11), randomInt(0, 31), randomInt(0, 23), randomInt(0, 59), randomInt(0, 59));
+
+    await TrackHistory.create(
+      ...Array.from({ length: 100 }, () => ({
+        track: rndTrack()._id,
+        user: rndUser()._id,
+        date: rndDate(),
+      }))
     );
   } finally {
     await db.close();

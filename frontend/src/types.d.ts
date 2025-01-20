@@ -38,6 +38,7 @@ export interface Track {
   album: string;
   trackNum: number;
   length: string | null;
+  youTubeUrl: string | null;
 }
 
 export interface GenericError {

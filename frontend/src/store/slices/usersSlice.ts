@@ -49,7 +49,7 @@ const slice = createSlice({
         state.loading = false;
         state.registrationError = error ?? null;
       })
-      .addCase(logout.fulfilled, (state) => {
+      .addCase(logout.pending, (state) => {
         state.user = null;
       });
   },

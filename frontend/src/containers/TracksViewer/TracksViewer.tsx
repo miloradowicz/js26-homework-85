@@ -18,7 +18,7 @@ const TracksViewer = () => {
   const handlePlay = useCallback(
     async (id: string) => {
       try {
-        await api.post<TrackSet>('track_history', { track: id }, { headers: { Authorization: user.token } });
+        await api.post<TrackSet>('track_history', { track: id }, { headers: { Authorization: user?.token } });
       } catch (e) {
         if (e instanceof Error) {
           enqueueSnackbar(e.message, { variant: 'error' });

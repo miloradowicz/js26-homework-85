@@ -12,7 +12,15 @@ const TrackList: FC<Props> = ({ list, onPlay }) => {
   return (
     <Stack gap={1}>
       {list.map((x) => (
-        <TrackListItem key={x._id} id={x._id} title={x.title} trackNum={x.trackNum} length={x.length} onPlay={async () => await onPlay(x._id)} />
+        <TrackListItem
+          key={x._id}
+          id={x._id}
+          title={x.title}
+          trackNum={x.trackNum}
+          length={x.length}
+          youTubeUrl={x.youTubeUrl}
+          onPlay={async () => await onPlay(x._id)}
+        />
       ))}
     </Stack>
   );

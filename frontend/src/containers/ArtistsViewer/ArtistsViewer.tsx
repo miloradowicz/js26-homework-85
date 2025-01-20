@@ -4,8 +4,11 @@ import { api } from '../../api';
 import { Artist } from '../../types';
 import { enqueueSnackbar } from 'notistack';
 import ArtistList from '../../components/ArtistList/ArtistList';
+import { isAxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const ArtistsViewer = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Artist[]>([]);
 
@@ -17,7 +20,9 @@ const ArtistsViewer = () => {
 
       setData(data);
     } catch (e) {
-      if (e instanceof Error) {
+      if (isAxiosError(e) && e.status === 404) {
+        navigate('not-found');
+      } else if (e instanceof Error) {
         enqueueSnackbar(e.message, { variant: 'error' });
       } else {
         console.error(e);
@@ -25,7 +30,7 @@ const ArtistsViewer = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     loadArtists();
