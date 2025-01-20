@@ -7,7 +7,7 @@ import AlbumsViewer from './containers/AlbumsViewer/AlbumsViewer';
 import TracksViewer from './containers/TracksViewer/TracksViewer';
 import SignIn from './containers/SignIn/SignIn';
 import SignUp from './containers/SignUp/SignUp';
-import TrackHistory from './containers/TrackHistory/TrackHistory';
+import TrackHistoryViewer from './containers/TrackHistoryViewer/TrackHistoryViewer';
 
 const App = () => {
   return (
@@ -20,7 +20,7 @@ const App = () => {
           <Route path='/album/:id' element={<TracksViewer />} />
           <Route path='/artist/not-found' element={<Page404 />} />
           <Route path='/album/not-found' element={<Page404 />} />
-          <Route path='/track_history' element={<TrackHistory />} />
+          <Route path='/track_history' element={<TrackHistoryViewer />} />
           <Route path='/login' element={<SignIn />} />
           <Route path='/register' element={<SignUp />} />
           <Route path='*' element={<Page404 />} />

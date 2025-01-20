@@ -50,7 +50,8 @@ const ArtistViewer = () => {
         <Typography gutterBottom variant='h6' component='div'>
           {data?.artist?.name}
         </Typography>
-        <AlbumList list={data?.albums ?? []} />
+
+        <Box sx={{ p: 2 }}>{data?.albums.length ? <AlbumList list={data?.albums ?? []} /> : <Typography>Nothing here yet.</Typography>}</Box>
       </Box>
     </>
   );

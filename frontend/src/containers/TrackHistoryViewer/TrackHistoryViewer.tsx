@@ -7,19 +7,14 @@ import { api } from '../../api';
 import { TrackHistoryRecord } from '../../types';
 import { useSnackbar } from 'notistack';
 import TrackHistoryList from '../../components/TrackHistoryList/TrackHistoryList';
+import { isAxiosError } from 'axios';
 
-const TrackHistory = () => {
+const TrackHistoryViewer = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<TrackHistoryRecord[]>([]);
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
   const { enqueueSnackbar } = useSnackbar();
-
-  useEffect(() => {
-    if (!user) {
-      navigate('/login');
-    }
-  }, [user, navigate]);
 
   const loadHistory = useCallback(async () => {
     try {
@@ -29,7 +24,9 @@ const TrackHistory = () => {
 
       setData(data);
     } catch (e) {
-      if (e instanceof Error) {
+      if (isAxiosError(e) && e.status === 401) {
+        navigate('/login');
+      } else if (e instanceof Error) {
         enqueueSnackbar(e.message, { variant: 'error' });
       } else {
         console.error(e);
@@ -37,7 +34,7 @@ const TrackHistory = () => {
     } finally {
       setLoading(false);
     }
-  }, [user, enqueueSnackbar]);
+  }, [user, enqueueSnackbar, navigate]);
 
   useEffect(() => {
     loadHistory();
@@ -54,10 +51,10 @@ const TrackHistory = () => {
             Track History
           </Typography>
         )}
-        <TrackHistoryList list={data} />
+        {data.length ? <TrackHistoryList list={data} /> : <Typography>Nothing here yet.</Typography>}
       </Box>
     </>
   );
 };
 
-export default TrackHistory;
+export default TrackHistoryViewer;

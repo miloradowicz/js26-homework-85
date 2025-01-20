@@ -1,4 +1,4 @@
-import { Backdrop, Box, CircularProgress } from '@mui/material';
+import { Backdrop, Box, CircularProgress, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../../api';
 import { Artist } from '../../types';
@@ -36,9 +36,10 @@ const ArtistsViewer = () => {
       <Backdrop sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })} open={loading}>
         <CircularProgress color='inherit' />
       </Backdrop>
-      <Box sx={{ p: 2 }}>
-        <ArtistList list={data} />
-      </Box>
+      <Typography gutterBottom variant='h6' component='div'>
+        Artists
+      </Typography>
+      <Box sx={{ p: 2 }}>{data.length ? <ArtistList list={data} /> : <Typography>Nothing here yet.</Typography>}</Box>
     </>
   );
 };
