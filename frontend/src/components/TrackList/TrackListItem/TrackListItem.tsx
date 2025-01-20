@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Link, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, Grid2 as Grid, Stack, Typography } from '@mui/material';
 import { FC, memo, useState } from 'react';
 import { useAppSelector } from '../../../app/hooks';
 import { selectUser } from '../../../store/slices/usersSlice';
@@ -27,35 +27,45 @@ const TrackListItem: FC<Props> = ({ title, trackNum, length, youTubeUrl, onPlay 
   };
 
   return (
-    <Card variant='outlined' sx={{ display: 'flex' }}>
-      <Box display='flex' justifyContent='space-between' flex={1} alignItems='center'>
-        <Stack flex={1}>
-          <CardContent>
-            <Typography gutterBottom variant='h6' component='div'>
-              {trackNum}
-            </Typography>
-            <Typography gutterBottom variant='h6' component='div'>
-              {title}
-            </Typography>
-            <Typography gutterBottom variant='h6' component='div'>
-              {length}
-            </Typography>
+    <Card variant='outlined' sx={{ px: 2, py: 1 }}>
+      <Grid container>
+        <Grid size={11}>
+          <CardContent component={Grid} container flex={1}>
+            <Grid size={2}>
+              <Typography gutterBottom variant='h6' component='div'>
+                {trackNum}
+              </Typography>
+            </Grid>
+            <Grid size={8}>
+              <Typography gutterBottom variant='h6' component='div'>
+                {title}
+              </Typography>
+            </Grid>
+            <Grid size={2}>
+              <Typography gutterBottom variant='h6' component='div'>
+                {length}
+              </Typography>
+            </Grid>
           </CardContent>
-        </Stack>
-        {user ? (
-          <Stack alignItems='center'>
-            {youTubeUrl ? (
-              <Button href={youTubeUrl ?? '#'} loading={loading} onClick={handlePlay} target='_blank' endIcon={<YouTubeIcon />}>
-                Play
-              </Button>
-            ) : (
-              <Button loading={loading} onClick={handlePlay}>
-                Play
-              </Button>
-            )}
-          </Stack>
-        ) : null}
-      </Box>
+        </Grid>
+        <Grid size={1}>
+          <CardActions>
+            {user ? (
+              <Stack alignItems='center'>
+                {youTubeUrl ? (
+                  <Button href={youTubeUrl ?? '#'} loading={loading} onClick={handlePlay} target='_blank' endIcon={<YouTubeIcon />}>
+                    Play
+                  </Button>
+                ) : (
+                  <Button loading={loading} onClick={handlePlay}>
+                    Play
+                  </Button>
+                )}
+              </Stack>
+            ) : null}
+          </CardActions>
+        </Grid>
+      </Grid>
     </Card>
   );
 };

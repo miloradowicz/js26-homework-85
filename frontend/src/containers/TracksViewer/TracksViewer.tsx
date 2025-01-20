@@ -4,13 +4,16 @@ import { api } from '../../api';
 import { TrackSet } from '../../types';
 import { enqueueSnackbar } from 'notistack';
 import TrackList from '../../components/TrackList/TrackList';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useAppSelector } from '../../app/hooks';
 import { selectUser } from '../../store/slices/usersSlice';
+import { isAxiosError } from 'axios';
 
 const TracksViewer = () => {
   const { id } = useParams();
   const user = useAppSelector(selectUser);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<TrackSet>();
@@ -38,7 +41,10 @@ const TracksViewer = () => {
 
       setData(data);
     } catch (e) {
-      if (e instanceof Error) {
+      if (isAxiosError(e) && (e.status === 404 || e.status === 400)) {
+        const locationWithoutId = location.pathname.slice(0, location.pathname.lastIndexOf('/'));
+        navigate(`${locationWithoutId}/not-found`);
+      } else if (e instanceof Error) {
         enqueueSnackbar(e.message, { variant: 'error' });
       } else {
         console.error(e);
@@ -46,7 +52,7 @@ const TracksViewer = () => {
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, navigate, location]);
 
   useEffect(() => {
     loadArtists();
