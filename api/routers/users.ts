@@ -12,15 +12,17 @@ router.post('/', async (req, res, next) => {
       username: req.body.username,
       password: req.body.password,
     });
+
     user.generateToken();
     await user.save();
+
     res.send(user);
   } catch (e) {
     if (e instanceof Error.ValidationError) {
-      res.status(400).send(e);
-    } else {
-      next(e);
+      return void res.status(400).send(e);
     }
+
+    next(e);
   }
 });
 
@@ -53,10 +55,10 @@ router.post('/sessions', async (req, res, next) => {
     return void res.send({ message: 'Authenticated', user });
   } catch (e) {
     if (e instanceof Error) {
-      res.status(400).send({ error: e.message });
-    } else {
-      next(e);
+      return void res.status(400).send({ error: e.message });
     }
+
+    next(e);
   }
 });
 
