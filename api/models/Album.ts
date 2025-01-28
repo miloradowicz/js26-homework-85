@@ -4,18 +4,17 @@ import Artist from './Artist';
 
 const schema = new mongoose.Schema(
   {
-    title: { type: String, required: [true, 'value is required'] },
+    title: { type: String, required: [true, 'Title is required'] },
     artist: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Artist',
-      required: [true, 'value is required'],
+      required: [true, 'Artist is required'],
       validate: {
-        validator: async (value: mongoose.Types.ObjectId) =>
-          !!(await Artist.findById(value)),
-        message: 'value not found.',
+        validator: async (value: mongoose.Types.ObjectId) => !!(await Artist.findById(value)),
+        message: 'Artist not found.',
       },
     },
-    year: { type: Number, required: [true, 'value is required'] },
+    year: { type: Number, required: [true, 'Year is required'] },
     coverUrl: String,
     __v: { type: Number, select: false },
   },
@@ -23,5 +22,12 @@ const schema = new mongoose.Schema(
     strict: 'throw',
   }
 );
+
+schema.set('toJSON', {
+  transform: (_doc, ret, _options) => {
+    delete ret.__v;
+    return ret;
+  },
+});
 
 export default mongoose.model('Album', schema);

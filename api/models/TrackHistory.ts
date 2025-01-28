@@ -7,26 +7,24 @@ const schema = new mongoose.Schema(
     track: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Track',
-      required: true,
+      required: [true, 'Track is required'],
       validate: {
-        validator: async (value: mongoose.Types.ObjectId) =>
-          !!(await Track.findById(value)),
-        message: 'value not found.',
+        validator: async (value: mongoose.Types.ObjectId) => !!(await Track.findById(value)),
+        message: 'Track not found.',
       },
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: [true, 'User is required'],
       validate: {
-        validator: async (value: mongoose.Types.ObjectId) =>
-          !!(await User.findById(value)),
-        message: 'value not found.',
+        validator: async (value: mongoose.Types.ObjectId) => !!(await User.findById(value)),
+        message: 'User not found.',
       },
     },
     date: {
       type: Date,
-      required: true,
+      required: [true, 'Date is required'],
       default: Date.now,
     },
   },

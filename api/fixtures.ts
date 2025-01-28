@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { fakerEN } from '@faker-js/faker';
 
 import config from './config';
 import User from './models/User';
@@ -32,13 +33,13 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
 
     const users = await User.create(
       {
-        username: 'newton',
-        password: 'apple',
+        username: 'mealy_forager',
+        password: 'dearly_sunder',
         token: crypto.randomUUID(),
       },
       {
-        username: 'planck',
-        password: '1234',
+        username: 'fantastic_presume',
+        password: 'vastly_demob',
         token: crypto.randomUUID(),
       }
     );
@@ -495,7 +496,15 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
 
     const rndTrack = () => tracks[randomInt(0, tracks.length - 1)];
     const rndUser = () => users[randomInt(0, users.length - 1)];
-    const rndDate = () => new Date(2020 + randomInt(0, 4), randomInt(1, 11), randomInt(0, 31), randomInt(0, 23), randomInt(0, 59), randomInt(0, 59));
+    const rndDate = () =>
+      new Date(
+        2020 + randomInt(0, 4),
+        randomInt(1, 11),
+        randomInt(0, 31),
+        randomInt(0, 23),
+        randomInt(0, 59),
+        randomInt(0, 59)
+      );
 
     await TrackHistory.create(
       ...Array.from({ length: 100 }, () => ({
