@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 import Album from './Album';
+import User from './User';
 
 const schema = new mongoose.Schema(
   {
@@ -17,6 +18,20 @@ const schema = new mongoose.Schema(
     trackNum: { type: Number, required: [true, 'Track number is required'] },
     length: String,
     youTubeUrl: String,
+    isPublished: {
+      type: Boolean,
+      required: [true, 'IsPublished is required'],
+      default: false,
+    },
+    publishedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'PublishedBy is required'],
+      validate: {
+        validator: async (value: mongoose.Types.ObjectId) => !!(await User.findById(value)),
+        message: 'User not found',
+      },
+    },
     __v: { type: Number, select: false },
   },
   {

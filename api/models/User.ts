@@ -8,11 +8,13 @@ export interface Fields {
   _id: mongoose.Types.ObjectId;
   username: string;
   password: string;
-  token: string;
+  role: string;
+  token: string | null;
 }
 
 interface Methods {
   checkPassword(password: string): Promise<boolean>;
+  clearToken(): void;
   generateToken(): void;
 }
 
@@ -22,17 +24,29 @@ const schema = new mongoose.Schema<HydratedDocument<Fields>, Model, Methods>(
   {
     username: {
       type: String,
-      required: true,
+      required: [true, 'Username is required'],
       unique: true,
       validate: {
         validator: async function (this: HydratedDocument<Fields>, value: string): Promise<boolean> {
           return !this.isModified('username') || !(await User.findOne({ username: value }));
         },
-        message: 'username already taken',
+        message: 'Username already occupied',
       },
     },
-    password: { type: String, required: true },
-    token: { type: String, required: true },
+    password: {
+      type: String,
+      required: [true, 'Password is required'],
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      required: [true, 'Role is required'],
+      default: 'user',
+    },
+    token: {
+      type: String,
+      default: null,
+    },
   },
   {
     strict: 'throw',
@@ -58,6 +72,10 @@ schema.set('toJSON', {
 
 schema.methods.checkPassword = function (password: string) {
   return bcrypt.compare(password, this.password);
+};
+
+schema.methods.clearToken = function () {
+  this.token = null;
 };
 
 schema.methods.generateToken = function () {
