@@ -1,11 +1,41 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { Error, Document, Types, HydratedDocument } from 'mongoose';
+import { Error } from 'mongoose';
 
+import auth, { RequestWithUser } from '../middleware/auth';
+import permit from '../middleware/permit';
 import { imageUpload } from '../middleware/multer';
 import Artist from '../models/Artist';
 import Album from '../models/Album';
 
 const router = express.Router();
+
+router.post(
+  '/',
+  auth,
+  permit('user', 'admin'),
+  imageUpload.single('cover'),
+  async (_req: Request, res: Response, next: NextFunction) => {
+    const req = _req as RequestWithUser;
+
+    try {
+      const album = await Album.create({
+        title: req.body.title ?? null,
+        artist: req.body.artist ?? null,
+        year: req.body.year ?? null,
+        coverUrl: req.file?.filename ?? null,
+        uploadedBy: req.user._id ?? null,
+      });
+
+      res.send(album);
+    } catch (e) {
+      if (e instanceof Error.ValidationError) {
+        return void res.status(400).send(e);
+      }
+
+      next(e);
+    }
+  }
+);
 
 router.get('/', async (req, res, next) => {
   const _artist = req.query.artist as string | undefined;
@@ -72,7 +102,7 @@ router.get('/:id', async (req, res, next) => {
   try {
     const album = await Album.findById(id).populate('artist');
 
-    if (album) {
+    if (!album) {
       return void res.status(404).send({ error: 'Album not found.' });
     }
 
@@ -86,20 +116,55 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-router.post('/', imageUpload.single('cover'), async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const album = await Album.create({
-      title: req.body.title ?? null,
-      artist: req.body.artist ?? null,
-      year: req.body.year ?? null,
-      coverUrl: req.file?.filename ?? null,
-    });
+router.patch('/:id/togglePublished', auth, permit('admin'), async (_req, res, next) => {
+  const req = _req as RequestWithUser<{ id: string }>;
+  const id = req.params.id;
 
+  try {
+    const album = await Album.findById(id);
+
+    if (!album) {
+      return void res.status(404).send({ error: 'Album not found.' });
+    }
+
+    if (req.user.role !== 'admin') {
+      return void res.status(403).send({ error: 'Unauthorized' });
+    }
+
+    album.isPublished = !album.isPublished;
+    await album.save();
     res.send(album);
   } catch (e) {
-    if (e instanceof Error.ValidationError) {
-      return void res.status(400).send(e);
+    if (e instanceof Error.CastError) {
+      return void res.status(400).send({ error: 'Invalid id' });
     }
+
+    next(e);
+  }
+});
+
+router.delete('/:id', auth, permit('user', 'admin'), async (_req, res, next) => {
+  const req = _req as RequestWithUser<{ id: string }>;
+  const id = req.params.id;
+
+  try {
+    const album = await Album.findById(id);
+
+    if (!album) {
+      return void res.status(404).send({ error: 'Album not found.' });
+    }
+
+    if (req.user.role !== 'admin' && (album.isPublished || album.uploadedBy !== req.user._id)) {
+      return void res.status(403).send({ error: 'Unauthorized' });
+    }
+
+    await album.deleteOne();
+    res.send(null);
+  } catch (e) {
+    if (e instanceof Error.CastError) {
+      return void res.status(400).send({ error: 'Invalid id' });
+    }
+
     next(e);
   }
 });

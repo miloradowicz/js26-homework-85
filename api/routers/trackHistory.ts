@@ -2,11 +2,30 @@ import express from 'express';
 import { Error } from 'mongoose';
 
 import auth, { RequestWithUser } from '../middleware/auth';
+import permit from '../middleware/permit';
 import TrackHistory from '../models/TrackHistory';
 
 const router = express.Router();
 
-router.get('/', auth, async (_req, res) => {
+router.post('/', auth, permit('user', 'admin'), async (_req, res, next) => {
+  const req = _req as RequestWithUser;
+
+  try {
+    const trackHistory = await TrackHistory.create({
+      track: req.body.track ?? null,
+      user: req.user._id ?? null,
+    });
+    res.send(trackHistory);
+  } catch (e) {
+    if (e instanceof Error.ValidationError) {
+      return void res.status(400).send(e);
+    }
+
+    next(e);
+  }
+});
+
+router.get('/', auth, permit('user', 'admin'), async (_req, res) => {
   const req = _req as RequestWithUser;
 
   const trackHistory = await TrackHistory.aggregate([
@@ -64,24 +83,6 @@ router.get('/', auth, async (_req, res) => {
   ]).sort({ date: -1 });
 
   res.send(trackHistory);
-});
-
-router.post('/', auth, async (_req, res, next) => {
-  const req = _req as RequestWithUser;
-
-  try {
-    const trackHistory = await TrackHistory.create({
-      track: req.body.track ?? null,
-      user: req.user._id ?? null,
-    });
-    res.send(trackHistory);
-  } catch (e) {
-    if (e instanceof Error.ValidationError) {
-      return void res.status(400).send(e);
-    }
-
-    next(e);
-  }
 });
 
 export default router;

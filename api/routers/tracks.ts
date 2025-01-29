@@ -1,11 +1,34 @@
 import express from 'express';
-import { Document, Error, HydratedDocument, Query } from 'mongoose';
+import { Error } from 'mongoose';
 
+import auth, { RequestWithUser } from '../middleware/auth';
+import permit from '../middleware/permit';
+import Artist from '../models/Artist';
 import Album from '../models/Album';
 import Track from '../models/Track';
-import Artist from '../models/Artist';
 
 const router = express.Router();
+
+router.post('/', auth, permit('user', 'admin'), async (_req, res, next) => {
+  const req = _req as RequestWithUser;
+
+  try {
+    const track = await Track.create({
+      title: req.body.title ?? null,
+      album: req.body.album ?? null,
+      length: req.body.length ?? null,
+      uploadedBy: req.user._id ?? null,
+    });
+
+    res.send(track);
+  } catch (e) {
+    if (e instanceof Error.ValidationError) {
+      return void res.status(400).send(e);
+    }
+
+    next(e);
+  }
+});
 
 router.get('/', async (req, res, next) => {
   const _artist = req.query.artist as string | undefined;
@@ -99,17 +122,53 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.post('/', async (req, res, next) => {
+router.patch('/:id/togglePublished', auth, permit('admin'), async (_req, res, next) => {
+  const req = _req as RequestWithUser<{ id: string }>;
+  const id = req.params.id;
+
   try {
-    const track = await Track.create({
-      title: req.body.title ?? null,
-      album: req.body.album ?? null,
-      length: req.body.length ?? null,
-    });
+    const track = await Track.findById(id);
+
+    if (!track) {
+      return void res.status(404).send({ error: 'Track not found.' });
+    }
+
+    if (req.user.role !== 'admin') {
+      return void res.status(403).send({ error: 'Unauthorized' });
+    }
+
+    track.isPublished = !track.isPublished;
+    await track.save();
     res.send(track);
   } catch (e) {
-    if (e instanceof Error.ValidationError) {
-      return void res.status(400).send(e);
+    if (e instanceof Error.CastError) {
+      return void res.status(400).send({ error: 'Invalid id' });
+    }
+
+    next(e);
+  }
+});
+
+router.delete('/:id', auth, permit('user', 'admin'), async (_req, res, next) => {
+  const req = _req as RequestWithUser<{ id: string }>;
+  const id = req.params.id;
+
+  try {
+    const track = await Track.findById(id);
+
+    if (!track) {
+      return void res.status(404).send({ error: 'Track not found.' });
+    }
+
+    if (req.user.role !== 'admin' && (track.isPublished || track.uploadedBy !== req.user._id)) {
+      return void res.status(403).send({ error: 'Unauthorized' });
+    }
+
+    await track.deleteOne();
+    res.send(null);
+  } catch (e) {
+    if (e instanceof Error.CastError) {
+      return void res.status(400).send({ error: 'Invalid id' });
     }
 
     next(e);

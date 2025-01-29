@@ -3,10 +3,10 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 
 import config from './config';
+import users from './routers/users';
 import artists from './routers/artists';
 import albums from './routers/albums';
 import tracks from './routers/tracks';
-import users from './routers/users';
 import trackHistory from './routers/trackHistory';
 
 const app = express();
