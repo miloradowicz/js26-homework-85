@@ -1,8 +1,9 @@
-import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
+
 import { useAppSelector } from '../../../app/hooks';
-import { selectUser } from '../../../store/slices/usersSlice';
-import UserMenu from '../UserMenu/UserMenu';
+import { selectUser } from '../../../features/users/usersSlice';
+import UserMenu from './UserMenu';
 
 const Header = () => {
   const user = useAppSelector(selectUser);

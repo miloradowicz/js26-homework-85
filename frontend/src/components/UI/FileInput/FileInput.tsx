@@ -1,12 +1,5 @@
 import { ChangeEventHandler, FC, useState } from 'react';
-
-import {
-  Button,
-  ButtonGroup,
-  ButtonProps,
-  TextField,
-  TextFieldProps,
-} from '@mui/material';
+import { Button, ButtonProps, TextField, TextFieldProps } from '@mui/material';
 
 interface Props {
   onChange?: ChangeEventHandler<HTMLInputElement>;
@@ -38,25 +31,38 @@ const FileInput: FC<TextFieldProps & Props> = ({
   };
 
   return (
-    <ButtonGroup>
-      <TextField disabled value={filenames.join(', ')} {...attributes} />
-      <Button
-        component='label'
-        role={undefined}
-        variant='contained'
-        tabIndex={-1}
-        {...buttonProps}
-      >
-        {buttonText}
-        <input
-          hidden
-          type='file'
-          name={name}
-          onChange={handleChange}
-          multiple={multiple}
-        />
-      </Button>
-    </ButtonGroup>
+    <TextField
+      disabled
+      value={filenames.join(', ')}
+      {...attributes}
+      sx={{
+        ...attributes?.sx,
+        '& .MuiInputBase-root': {
+          pr: 0,
+        },
+      }}
+      slotProps={{
+        input: {
+          endAdornment: (
+            <Button
+              disableElevation
+              component='label'
+              role={undefined}
+              variant='contained'
+              tabIndex={-1}
+              {...buttonProps}
+              sx={{
+                ...buttonProps?.sx,
+                alignSelf: 'stretch',
+              }}
+            >
+              {buttonText}
+              <input hidden type='file' name={name} onChange={handleChange} multiple={multiple} />
+            </Button>
+          ),
+        },
+      }}
+    />
   );
 };
 
