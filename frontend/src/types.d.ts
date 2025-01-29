@@ -11,7 +11,25 @@ export interface Album {
   artist: string;
   year: number;
   coverUrl: string | null;
-  trackCount?: number;
+  trackCount: number;
+}
+
+export interface Track {
+  _id: string;
+  title: string;
+  album: string;
+  trackNum: number;
+  length: string | null;
+  youTubeUrl: string | null;
+}
+
+export interface TrackHistoryRecord {
+  _id: string;
+  track: TrackBody;
+  album: AlbumBody;
+  artist: Artist;
+  user: string;
+  date: string;
 }
 
 export type AlbumBody = Omit<Album, 'artist'>;
@@ -29,16 +47,8 @@ export interface AlbumSet {
 
 export interface TrackSet {
   tracks: TrackBody[] | Track[];
-  album?: PopulatedAlbum;
-}
-
-export interface Track {
-  _id: string;
-  title: string;
-  album: string;
-  trackNum: number;
-  length: string | null;
-  youTubeUrl: string | null;
+  album?: Album;
+  artist?: Artist;
 }
 
 export interface GenericError {
@@ -82,13 +92,4 @@ export interface SignInMutation {
 export interface SignUpMutation {
   username: string;
   password: string;
-}
-
-export interface TrackHistoryRecord {
-  _id: string;
-  track: TrackBody;
-  album: AlbumBody;
-  artist: Artist;
-  user: string;
-  date: string;
 }
