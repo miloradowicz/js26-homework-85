@@ -45,10 +45,8 @@ const FileInput: FC<TextFieldProps & Props> = ({
         input: {
           endAdornment: (
             <Button
-              disableElevation
               component='label'
               role={undefined}
-              variant='contained'
               tabIndex={-1}
               {...buttonProps}
               sx={{
