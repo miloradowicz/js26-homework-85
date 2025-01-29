@@ -13,7 +13,7 @@ export interface Fields {
 }
 
 interface Methods {
-  checkPassword(password: string): Promise<boolean>;
+  checkPassword(_: string): Promise<boolean>;
   clearToken(): void;
   generateToken(): void;
 }
@@ -64,7 +64,7 @@ schema.pre('save', async function (next) {
 });
 
 schema.set('toJSON', {
-  transform: (_doc, ret, _options) => {
+  transform: (_doc, ret) => {
     delete ret.password;
     return ret;
   },

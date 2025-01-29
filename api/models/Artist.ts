@@ -12,10 +12,10 @@ const schema = new mongoose.Schema(
       required: [true, 'IsPublished is required'],
       default: false,
     },
-    publishedBy: {
+    uploadedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: [true, 'PublishedBy is required'],
+      required: [true, 'UploadedBy is required'],
       validate: {
         validator: async (value: mongoose.Types.ObjectId) => !!(await User.findById(value)),
         message: 'User not found',
@@ -29,7 +29,7 @@ const schema = new mongoose.Schema(
 );
 
 schema.set('toJSON', {
-  transform: (_doc, ret, _options) => {
+  transform: (_doc, ret) => {
     delete ret.__v;
     return ret;
   },

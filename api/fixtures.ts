@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { fakerEN } from '@faker-js/faker';
 
 import config from './config';
 import User from './models/User';
@@ -57,28 +56,28 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         photoUrl: '_babymetal.jpg',
         description: 'Kawaii metal band from Japan',
         isPublished: true,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         name: 'Eluveitie',
         photoUrl: '_eluveitie.jpg',
         description: 'Folk metal band from Switzerland',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         name: 'Dethklok',
         photoUrl: '_dethklok.jpg',
         description: 'Death metal band from the USA',
         isPublished: true,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       },
       {
         name: 'Faun',
         photoUrl: '_faun.jpg',
         description: 'Folk rock band from Germany',
         isPublished: false,
-        publishedBy: users[3]._id,
+        uploadedBy: users[3]._id,
       }
     );
 
@@ -101,7 +100,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         year: 2014,
         coverUrl: '_babymetal_babymetal.jpg',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Metal Resistance',
@@ -109,7 +108,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         year: 2016,
         coverUrl: '_babymetal_metal-resistance.jpg',
         isPublished: true,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Metal Galaxy',
@@ -117,7 +116,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         year: 2019,
         coverUrl: '_babymetal_metal-galaxy.jpg',
         isPublished: true,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Spirit',
@@ -125,7 +124,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         year: 2006,
         coverUrl: '_eluveitie_spirit.jpg',
         isPublished: true,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Slania',
@@ -133,7 +132,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         year: 2008,
         coverUrl: '_eluveitie_slania.jpg',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Helvetios',
@@ -141,7 +140,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         year: 2012,
         coverUrl: '_eluveitie_helvetios.jpg',
         isPublished: false,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       },
       {
         title: 'The Deathalbum',
@@ -149,7 +148,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         year: 2007,
         coverUrl: '_dethklok_the-deathalbum.jpg',
         isPublished: true,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       },
       {
         title: 'Deathalbum II',
@@ -157,7 +156,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         year: 2009,
         coverUrl: '_dethklok_deathalbum-ii.jpg',
         isPublished: true,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       },
       {
         title: 'Eden',
@@ -165,7 +164,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         year: 2011,
         coverUrl: '_faun_eden.jpg',
         isPublished: true,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       },
       {
         title: 'Luna',
@@ -173,7 +172,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         year: 2014,
         coverUrl: '_faun_luna.jpg',
         isPublished: true,
-        publishedBy: users[3]._id,
+        uploadedBy: users[3]._id,
       },
       {
         title: 'Midgard',
@@ -181,7 +180,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         year: 2016,
         coverUrl: '_faun_midgard.jpg',
         isPublished: true,
-        publishedBy: users[3]._id,
+        uploadedBy: users[3]._id,
       }
     );
 
@@ -193,7 +192,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         length: '5:46',
         youTubeUrl: 'https://www.youtube.com/watch?v=VavzD_bTov4',
         isPublished: true,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Megitsune',
@@ -201,7 +200,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 2,
         length: '4:07',
         isPublished: true,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Gimme Chocolate!!',
@@ -210,7 +209,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         length: '3:50',
         youTubeUrl: 'https://www.youtube.com/watch?v=WIKqgE4BwAY&pp=ygUZZ2ltbWUgY2hvY29sYXRlIGJhYnltZXRhbA%3D%3D',
         isPublished: true,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Iine!',
@@ -218,7 +217,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 4,
         length: '4:08',
         isPublished: true,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Akatsuki',
@@ -226,7 +225,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 5,
         length: '5:25',
         isPublished: true,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Road of Resistance',
@@ -235,7 +234,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         length: '5:18',
         youTubeUrl: 'https://www.youtube.com/watch?v=zTEYUFgLveY&pp=ygUccm9hZCBvZiByZXNpc3RhbmNlIGJhYnltZXRhbA%3D%3D',
         isPublished: true,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Karate',
@@ -243,7 +242,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 2,
         length: '4:23',
         isPublished: false,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Awadama Fever',
@@ -251,7 +250,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 3,
         length: '4:13',
         isPublished: false,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Yava!',
@@ -259,7 +258,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 4,
         length: '3:48',
         isPublished: false,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Amore',
@@ -267,7 +266,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 5,
         length: '4:39',
         isPublished: true,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Future Metal',
@@ -275,7 +274,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 1,
         length: '2:05',
         isPublished: true,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Da Da Dance',
@@ -283,7 +282,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 2,
         length: '3:51',
         isPublished: true,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Elevator Girl',
@@ -291,7 +290,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 3,
         length: '2:46',
         isPublished: true,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Shanti Shanti Shanti',
@@ -299,7 +298,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 4,
         length: '3:10',
         isPublished: true,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Oh! Majinai',
@@ -308,7 +307,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         length: '3:14',
         youTubeUrl: 'https://www.youtube.com/watch?v=wPJyz0KvudE&pp=ygULT2ghIE1hamluYWk%3D',
         isPublished: true,
-        publishedBy: users[0]._id,
+        uploadedBy: users[0]._id,
       },
       {
         title: 'Spirit',
@@ -317,7 +316,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         length: '2:32',
         youTubeUrl: 'https://www.youtube.com/watch?v=u3q6WWLufO8&pp=ygUQZWx1dmVpdGllIHNwaXJpdA%3D%3D',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'uis Elveti',
@@ -325,7 +324,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 2,
         length: '4:24',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Your Gaulish War',
@@ -333,7 +332,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 3,
         length: '5:11',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Of Fire, Wind & Wisdom',
@@ -341,7 +340,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 4,
         length: '3:05',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Samon',
@@ -349,7 +348,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 5,
         length: '1:49',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Primordial Breath',
@@ -357,7 +356,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 1,
         length: '4:19',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Inis Mona',
@@ -366,7 +365,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         length: '4:09',
         youTubeUrl: 'https://www.youtube.com/watch?v=iijKLHCQw5o&pp=ygUTaW5pcyBtb25hIGVsdXZlaXRpZQ%3D%3D',
         isPublished: true,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       },
       {
         title: 'Gray Sublime Archon',
@@ -374,7 +373,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 3,
         length: '4:21',
         isPublished: true,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       },
       {
         title: 'Anagantios',
@@ -382,7 +381,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 4,
         length: '3:25',
         isPublished: true,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       },
       {
         title: 'Prologue',
@@ -390,7 +389,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 1,
         length: '1:24',
         isPublished: true,
-        publishedBy: users[3]._id,
+        uploadedBy: users[3]._id,
       },
       {
         title: 'Helvetios',
@@ -399,7 +398,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         length: '4:00',
         youTubeUrl: 'https://www.youtube.com/watch?v=ohotq66c0ec&pp=ygUJaGVsdmV0aW9z',
         isPublished: true,
-        publishedBy: users[3]._id,
+        uploadedBy: users[3]._id,
       },
       {
         title: 'Luxtos',
@@ -407,7 +406,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 3,
         length: '3:56',
         isPublished: true,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       },
       {
         title: 'Home',
@@ -415,7 +414,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 4,
         length: '5:16',
         isPublished: true,
-        publishedBy: users[3]._id,
+        uploadedBy: users[3]._id,
       },
       {
         title: 'Santonian Shores',
@@ -423,7 +422,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 5,
         length: '3:58',
         isPublished: true,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       },
 
       {
@@ -433,7 +432,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         length: '3:24',
         youTubeUrl: 'https://www.youtube.com/watch?v=r-eKJIJXaqE&pp=ygUIZGV0aGtsb2s%3D',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Go into the Water',
@@ -441,7 +440,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 2,
         length: '4:20',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Awaken',
@@ -449,7 +448,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 3,
         length: '3:37',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Bloodrocuted',
@@ -457,7 +456,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 4,
         length: '2:18',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Go Forth and Die',
@@ -466,7 +465,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         length: '4:22',
         youTubeUrl: 'https://www.youtube.com/watch?v=zKlf6oay4FA&pp=ygUQZ28gZm9ydGggYW5kIGRpZQ%3D%3D',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Bloodlines',
@@ -474,7 +473,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 1,
         length: '3:30',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'The Gears',
@@ -482,7 +481,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 2,
         length: '4:21',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Burn the Earth',
@@ -491,7 +490,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         length: '3:59',
         youTubeUrl: 'https://www.youtube.com/watch?v=DmVkkkuZLeU&pp=ygUXZGV0aGtsb2sgYnVybiB0aGUgZWFydGg%3D',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Laser Cannon Death Sentence',
@@ -499,7 +498,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 4,
         length: '4:35',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Black Fire Upon Us',
@@ -507,7 +506,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 5,
         length: '5:40',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Feuer',
@@ -516,7 +515,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         length: '3:15',
         youTubeUrl: 'https://www.youtube.com/watch?v=-J4AuEj4zHE',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Walpurgisnacht',
@@ -525,7 +524,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         length: '4:02',
         youTubeUrl: 'https://www.youtube.com/watch?v=nLgM1QJ3S_I',
         isPublished: true,
-        publishedBy: users[1]._id,
+        uploadedBy: users[1]._id,
       },
       {
         title: 'Galdra',
@@ -534,7 +533,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         length: '3:21',
         youTubeUrl: 'https://www.youtube.com/watch?v=1lFjnlf--Jw',
         isPublished: true,
-        publishedBy: users[3]._id,
+        uploadedBy: users[3]._id,
       },
       {
         title: 'The Butterfly',
@@ -542,7 +541,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 4,
         length: '1:33',
         isPublished: true,
-        publishedBy: users[3]._id,
+        uploadedBy: users[3]._id,
       },
       {
         title: 'Adam Lay Yboundun',
@@ -550,7 +549,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 5,
         length: '4:36',
         isPublished: true,
-        publishedBy: users[3]._id,
+        uploadedBy: users[3]._id,
       },
       {
         title: 'Luna Prolog',
@@ -558,7 +557,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 1,
         length: '1:25',
         isPublished: true,
-        publishedBy: users[3]._id,
+        uploadedBy: users[3]._id,
       },
       {
         title: 'Walpurgisnacht',
@@ -567,7 +566,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         length: '3:49',
         youTubeUrl: 'https://www.youtube.com/watch?v=nLgM1QJ3S_I',
         isPublished: true,
-        publishedBy: users[3]._id,
+        uploadedBy: users[3]._id,
       },
       {
         title: 'Brutes Volk',
@@ -575,7 +574,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 3,
         length: '4:16',
         isPublished: true,
-        publishedBy: users[3]._id,
+        uploadedBy: users[3]._id,
       },
       {
         title: 'Menuett',
@@ -583,7 +582,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 4,
         length: '4:56',
         isPublished: true,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       },
       {
         title: 'Hekate',
@@ -591,7 +590,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 5,
         length: '4:15',
         isPublished: true,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       },
       {
         title: 'Midgard Prolog',
@@ -599,7 +598,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 1,
         length: '0:50',
         isPublished: true,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       },
       {
         title: 'Federkleid',
@@ -608,7 +607,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         length: '4:42',
         youTubeUrl: 'https://www.youtube.com/watch?v=zOvsyamoEDg&pp=ygUPZmVkZXJrbGVpZCBmYXVu',
         isPublished: true,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       },
       {
         title: 'Sonnenreigen (Luchnasad)',
@@ -616,7 +615,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 3,
         length: '3:54',
         isPublished: true,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       },
       {
         title: 'Alba II Intro',
@@ -624,7 +623,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 4,
         length: '1:50',
         isPublished: true,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       },
       {
         title: 'Alba II',
@@ -632,7 +631,7 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
         trackNum: 5,
         length: '6:10',
         isPublished: true,
-        publishedBy: users[2]._id,
+        uploadedBy: users[2]._id,
       }
     );
 
