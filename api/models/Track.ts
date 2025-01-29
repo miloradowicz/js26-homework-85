@@ -12,10 +12,25 @@ const schema = new mongoose.Schema(
       required: [true, 'Album is required'],
       validate: {
         validator: async (value: mongoose.Types.ObjectId) => !!(await Album.findById(value)),
-        message: 'Album not found.',
+        message: 'Album not found',
       },
     },
-    trackNum: { type: Number, required: [true, 'Track number is required'] },
+    trackNum: {
+      type: Number,
+      required: [true, 'Track number is required'],
+      validate: [
+        {
+          validator: (value: number) => Number.isInteger(value) && value >= 1 && value <= 99,
+          message: 'Track number must be an integer between 1 and 99',
+        },
+        {
+          validator: async function (this: ReturnType<typeof Track.hydrate>, value: number) {
+            return !(await Track.findOne({ album: this.album, trackNum: value }));
+          },
+          message: 'Track with the same track number already exists in the album',
+        },
+      ],
+    },
     length: String,
     youTubeUrl: String,
     isPublished: {
@@ -46,4 +61,6 @@ schema.set('toJSON', {
   },
 });
 
-export default mongoose.model('Track', schema);
+const Track = mongoose.model('Track', schema);
+
+export default Track;

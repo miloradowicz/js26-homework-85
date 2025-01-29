@@ -4,7 +4,7 @@ import User from './User';
 
 const schema = new mongoose.Schema(
   {
-    name: { type: String, required: [true, 'Name is required.'] },
+    name: { type: String, required: [true, 'Name is required'] },
     photoUrl: String,
     description: String,
     isPublished: {

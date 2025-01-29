@@ -12,10 +12,17 @@ const schema = new mongoose.Schema(
       required: [true, 'Artist is required'],
       validate: {
         validator: async (value: mongoose.Types.ObjectId) => !!(await Artist.findById(value)),
-        message: 'Artist not found.',
+        message: 'Artist not found',
       },
     },
-    year: { type: Number, required: [true, 'Year is required'] },
+    year: {
+      type: Number,
+      required: [true, 'Year is required'],
+      validate: {
+        validator: (value: number) => Number.isInteger(value) && value >= 1900 && value <= 2032,
+        message: 'Year must be an integer between 1900 and 2032',
+      },
+    },
     coverUrl: String,
     isPublished: {
       type: Boolean,

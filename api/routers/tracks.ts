@@ -16,6 +16,7 @@ router.post('/', auth, permit('user', 'admin'), async (_req, res, next) => {
     const track = await Track.create({
       title: req.body.title ?? null,
       album: req.body.album ?? null,
+      trackNum: req.body.trackNum ?? null,
       length: req.body.length ?? null,
       uploadedBy: req.user._id ?? null,
     });
