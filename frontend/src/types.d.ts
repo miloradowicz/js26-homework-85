@@ -52,10 +52,6 @@ export interface ValidationError {
       message: string;
     };
   };
-
-  message: string;
-  name: string;
-  _message: string;
 }
 
 export interface AuthenticationError {
@@ -70,12 +66,12 @@ export interface AuthenticationError {
 export interface User {
   _id: string;
   username: string;
+  role: 'user' | 'admin';
   token: string;
 }
 
 export interface Session {
-  message: string;
-  user: User;
+  user: User | null;
 }
 
 export interface SignInMutation {

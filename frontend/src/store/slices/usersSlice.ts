@@ -1,20 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { login, logout, register } from '../thunks/usersThunk';
-import { AuthenticationError, User, ValidationError } from '../../types';
+
+import { AuthenticationError, GenericError, User, ValidationError } from '../../types';
 import { RootState } from '../../app/store';
+import { login, logout, register } from '../thunks/usersThunk';
 
 interface State {
   user: User | null;
   loading: boolean;
-  loginError: AuthenticationError | null;
-  registrationError: ValidationError | null;
+  error: GenericError | AuthenticationError | ValidationError | null;
 }
 
 const initialState: State = {
   user: null,
   loading: false,
-  loginError: null,
-  registrationError: null,
+  error: null,
 };
 
 const slice = createSlice({
@@ -25,32 +24,36 @@ const slice = createSlice({
     builder
       .addCase(login.pending, (state) => {
         state.loading = true;
-        state.loginError = null;
-        state.registrationError = null;
+        state.error = null;
       })
       .addCase(login.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.user = payload.user;
       })
-      .addCase(login.rejected, (state, { payload: error }) => {
+      .addCase(login.rejected, (state, { payload, error }) => {
         state.loading = false;
-        state.loginError = error ?? null;
+        state.error = payload ?? { error: error.message ?? 'Unknown error' };
       })
       .addCase(register.pending, (state) => {
         state.loading = true;
-        state.loginError = null;
-        state.registrationError = null;
+        state.error = null;
       })
       .addCase(register.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.user = payload;
       })
-      .addCase(register.rejected, (state, { payload: error }) => {
+      .addCase(register.rejected, (state, { payload, error }) => {
         state.loading = false;
-        state.registrationError = error ?? null;
+        state.error = payload ?? { error: error.message ?? 'Unknown error' };
       })
       .addCase(logout.pending, (state) => {
-        state.user = null;
+        state.error = null;
+      })
+      .addCase(logout.fulfilled, (state, { payload }) => {
+        state.user = payload.user;
+      })
+      .addCase(logout.rejected, (state, { error }) => {
+        state.error = { error: error.message ?? 'Unknown error' };
       });
   },
 });
@@ -59,5 +62,4 @@ export const users = slice.reducer;
 
 export const selectUser = (state: RootState) => state.users.user;
 export const selectLoading = (state: RootState) => state.users.loading;
-export const selectLoginError = (state: RootState) => state.users.loginError;
-export const selectRegistrationError = (state: RootState) => state.users.registrationError;
+export const selectError = (state: RootState) => state.users.error;

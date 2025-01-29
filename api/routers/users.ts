@@ -43,7 +43,7 @@ router.post('/sessions', async (req, res, next) => {
     user.generateToken();
     await user.save();
 
-    return void res.send({ message: 'Authenticated', user });
+    return void res.send({ user });
   } catch (e) {
     if (e instanceof Error) {
       return void res.status(400).send({ error: e.message });
@@ -63,7 +63,7 @@ router.delete('/sessions', auth, permit('user', 'admin'), async (_req, res) => {
   user.clearToken();
   await user.save();
 
-  res.send({ message: 'Logged out' });
+  res.send({ user: null });
 });
 
 export default router;
