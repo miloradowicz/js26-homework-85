@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from 'react';
+import { FC, MouseEventHandler, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Menu, MenuItem } from '@mui/material';
 
@@ -16,13 +16,21 @@ const UserMenu: FC<Props> = ({ user }) => {
   const ref = useRef(null);
   const [open, setOpen] = useState(false);
 
+  const closeAndNavigate = (url: string) => {
+    setOpen(false);
+    navigate(url);
+  };
+
   return (
     <>
       <Button ref={ref} onClick={() => setOpen(true)} color='inherit'>
         {user.username}
       </Button>
       <Menu anchorEl={ref.current} open={open} onClose={() => setOpen(false)}>
-        <MenuItem onClick={() => navigate('/track_history')}>Track history</MenuItem>
+        <MenuItem onClick={() => closeAndNavigate('/artist/new')}>Add new artist</MenuItem>
+        <MenuItem onClick={() => closeAndNavigate('/album/new')}>Add new album</MenuItem>
+        <MenuItem onClick={() => closeAndNavigate('/track/new')}>Add new track</MenuItem>
+        <MenuItem onClick={() => closeAndNavigate('/track_history')}>Track history</MenuItem>
         <MenuItem onClick={async () => await dispatch(logout())}>Logout</MenuItem>
       </Menu>
     </>
