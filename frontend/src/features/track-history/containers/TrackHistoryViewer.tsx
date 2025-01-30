@@ -2,20 +2,23 @@ import { isAxiosError } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import { Backdrop, CircularProgress, Box, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 
 import { TrackHistoryRecord } from '../../../types';
 import { api } from '../../../api';
 import { useAppSelector } from '../../../app/hooks';
 import { selectUser } from '../../users/usersSlice';
-import TrackHistoryList from '../components/TrackHistoryList';
+import Loader from '../../../components/UI/Loader/Loader';
+import TrackHistoryListItem from '../components/TrackHistoryListItem';
 
 const TrackHistoryViewer = () => {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<TrackHistoryRecord[]>([]);
   const navigate = useNavigate();
-  const user = useAppSelector(selectUser);
+
   const { enqueueSnackbar } = useSnackbar();
+
+  const user = useAppSelector(selectUser);
+  const [data, setData] = useState<TrackHistoryRecord[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const loadHistory = useCallback(async () => {
     try {
@@ -39,20 +42,37 @@ const TrackHistoryViewer = () => {
 
   useEffect(() => {
     loadHistory();
-  }, [loadHistory]);
+  }, [loadHistory, user]);
 
   return (
     <>
-      <Backdrop sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })} open={loading}>
-        <CircularProgress color='inherit' />
-      </Backdrop>
-      <Box sx={{ p: 2 }}>
-        {user && (
-          <Typography gutterBottom variant='h6' component='div'>
-            Track History
-          </Typography>
-        )}
-        {data.length ? <TrackHistoryList list={data} /> : <Typography>Nothing here yet.</Typography>}
+      <Loader open={loading} />
+      <Box maxWidth='md' mx='auto'>
+        <Typography component='h1' variant='h4' gutterBottom>
+          Track history
+        </Typography>
+        <Box py={2}>
+          {user && (
+            <Typography gutterBottom variant='h6' component='div'>
+              Track History
+            </Typography>
+          )}
+          {data.length ? (
+            <Stack gap={1}>
+              {data.map((x) => (
+                <TrackHistoryListItem
+                  key={x._id}
+                  id={x._id}
+                  track={x.track.title}
+                  artist={x.artist.name}
+                  date={x.date}
+                />
+              ))}
+            </Stack>
+          ) : (
+            <Typography fontStyle='italic'>Nothing here yet.</Typography>
+          )}
+        </Box>
       </Box>
     </>
   );

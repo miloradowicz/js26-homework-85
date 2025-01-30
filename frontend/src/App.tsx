@@ -22,7 +22,7 @@ const App = () => {
   return (
     <>
       <Header />
-      <Container sx={{ py: 3, px: 2 }}>
+      <Container sx={{ py: 8, px: 2, minWidth: 360 }}>
         <Routes>
           <Route path='/' element={<ArtistsViewer />} />
           <Route path='/artist/:id' element={<AlbumsViewer />} />

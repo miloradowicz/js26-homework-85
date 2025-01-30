@@ -20,10 +20,9 @@ const initialData: FormData = {
 };
 
 const SignUpForm: FC<Props> = ({ onSubmit }) => {
-  const loading = useAppSelector(selectLoading);
-  const error = useAppSelector(selectError);
-
   const [data, setData] = useState<FormData>(initialData);
+  const error = useAppSelector(selectError);
+  const loading = useAppSelector(selectLoading);
 
   const getFieldError = (fieldName: string) => {
     try {

@@ -41,7 +41,7 @@ const TrackCreator = () => {
       setArtists(data);
     } catch (e) {
       if (e instanceof Error) {
-        return enqueueSnackbar(e.message, { variant: 'error' });
+        return void enqueueSnackbar(e.message, { variant: 'error' });
       }
 
       console.error(e);
@@ -69,7 +69,7 @@ const TrackCreator = () => {
       setAlbums(data);
     } catch (e) {
       if (e instanceof Error) {
-        return enqueueSnackbar(e.message, { variant: 'error' });
+        return void enqueueSnackbar(e.message, { variant: 'error' });
       }
 
       console.error(e);
@@ -103,7 +103,7 @@ const TrackCreator = () => {
         if (isAxiosError(e) && e.response && e.response.status === 400) {
           setError(e.response.data);
         } else if (e instanceof Error) {
-          return enqueueSnackbar(e.message, { variant: 'error' });
+          return void enqueueSnackbar(e.message, { variant: 'error' });
         }
 
         console.error(e);
@@ -119,6 +119,7 @@ const TrackCreator = () => {
         Add track
       </Typography>
       <Box
+        py={2}
         noValidate
         component='form'
         onSubmit={handleSubmit}

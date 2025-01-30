@@ -21,6 +21,11 @@ const UserMenu: FC<Props> = ({ user }) => {
     navigate(url);
   };
 
+  const handleClick: MouseEventHandler = async (e) => {
+    setOpen(false);
+    await dispatch(logout());
+  };
+
   return (
     <>
       <Button ref={ref} onClick={() => setOpen(true)} color='inherit'>
@@ -31,7 +36,7 @@ const UserMenu: FC<Props> = ({ user }) => {
         <MenuItem onClick={() => closeAndNavigate('/album/new')}>Add new album</MenuItem>
         <MenuItem onClick={() => closeAndNavigate('/track/new')}>Add new track</MenuItem>
         <MenuItem onClick={() => closeAndNavigate('/track_history')}>Track history</MenuItem>
-        <MenuItem onClick={async () => await dispatch(logout())}>Logout</MenuItem>
+        <MenuItem onClick={handleClick}>Logout</MenuItem>
       </Menu>
     </>
   );

@@ -8,9 +8,9 @@ import { register } from '../usersThunk';
 import SignUpForm from '../components/SignUpForm';
 
 const SignUp = () => {
-  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleSubmit = async (data: SignUpMutation) => {
     try {

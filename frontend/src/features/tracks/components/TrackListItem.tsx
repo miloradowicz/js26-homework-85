@@ -1,6 +1,19 @@
 import { FC, memo, useState } from 'react';
-import { Button, Card, CardActions, CardContent, Grid2 as Grid, Stack, Typography } from '@mui/material';
-import YouTubeIcon from '@mui/icons-material/YouTube';
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Chip,
+  CircularProgress,
+  Grid2 as Grid,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { Delete, YouTube, Publish } from '@mui/icons-material';
+
+import { useAppSelector } from '../../../app/hooks';
+import { selectUser } from '../../users/usersSlice';
 
 interface Props {
   id: string;
@@ -8,69 +21,114 @@ interface Props {
   trackNum: number;
   length: string | null;
   youTubeUrl: string | null;
+  isPublished: boolean;
+  uploadedBy: string;
   onPlay?: () => Promise<void>;
+  onPublish: () => Promise<void>;
+  onDelete: () => Promise<void>;
 }
 
-const TrackListItem: FC<Props> = ({ title, trackNum, length, youTubeUrl, onPlay }) => {
-  const [loading, setLoading] = useState(false);
+const TrackListItem: FC<Props> = ({
+  title,
+  trackNum,
+  length,
+  youTubeUrl,
+  isPublished,
+  uploadedBy,
+  onPlay,
+  onPublish,
+  onDelete,
+}) => {
+  const user = useAppSelector(selectUser);
+  const [playing, setPlaying] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const handlePlay = async () => {
     if (onPlay) {
       try {
-        setLoading(true);
+        setPlaying(true);
         await onPlay();
       } finally {
-        setLoading(false);
+        setPlaying(false);
       }
     }
   };
 
+  const handlePublish = async () => {
+    try {
+      setPublishing(true);
+
+      await onPublish();
+    } finally {
+      setPublishing(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      setDeleting(true);
+
+      await onDelete();
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
-    <Card variant='outlined' sx={{ px: 2, py: 1 }}>
-      <Grid container>
-        <Grid size={11}>
-          <CardContent component={Grid} container flex={1}>
-            <Grid size={2}>
-              <Typography gutterBottom variant='h6' component='div'>
-                {trackNum}
-              </Typography>
-            </Grid>
-            <Grid size={8}>
-              <Typography gutterBottom variant='h6' component='div'>
-                {title}
-              </Typography>
-            </Grid>
-            <Grid size={2}>
-              <Typography gutterBottom variant='h6' component='div'>
-                {length}
-              </Typography>
-            </Grid>
-          </CardContent>
+    <Card variant='outlined'>
+      <CardContent component={Grid} container sx={{ py: 1, px: 4 }}>
+        <Grid size={{ xs: 2 }}>
+          <Typography gutterBottom variant='body1' component='div'>
+            {trackNum}
+          </Typography>
         </Grid>
-        <Grid size={1}>
-          <CardActions>
-            {onPlay && (
-              <Stack alignItems='center'>
-                {youTubeUrl ? (
-                  <Button
-                    href={youTubeUrl ?? '#'}
-                    loading={loading}
-                    onClick={handlePlay}
-                    target='_blank'
-                    endIcon={<YouTubeIcon />}
-                  >
-                    Play
-                  </Button>
-                ) : (
-                  <Button loading={loading} onClick={handlePlay}>
-                    Play
-                  </Button>
-                )}
-              </Stack>
+        <Grid size={{ xs: 8 }}>
+          <Typography gutterBottom variant='body1' component='div'>
+            {title}
+          </Typography>
+        </Grid>
+        <Grid size={{ xs: 2 }}>
+          <Stack justifyContent='center'>
+            <Typography gutterBottom variant='body1' component='div' textAlign='center'>
+              {length}
+            </Typography>
+            {onPlay && youTubeUrl ? (
+              <Button
+                href={youTubeUrl ?? '#'}
+                loading={playing}
+                onClick={handlePlay}
+                target='_blank'
+                endIcon={<YouTube />}
+              >
+                Play
+              </Button>
+            ) : (
+              <Button loading={playing} onClick={handlePlay}>
+                Play
+              </Button>
             )}
-          </CardActions>
+          </Stack>
         </Grid>
-      </Grid>
+      </CardContent>
+      <CardActions>
+        {!isPublished && (
+          <Chip
+            label='Unpublished'
+            variant='outlined'
+            deleteIcon={publishing ? <CircularProgress size={18} /> : <Publish />}
+            onDelete={handlePublish}
+          />
+        )}
+        {user && (user.role === 'admin' || uploadedBy === user._id) && (
+          <Chip
+            label='Uploaded'
+            variant='outlined'
+            deleteIcon={deleting ? <CircularProgress size={18} /> : <Delete />}
+            onDelete={handleDelete}
+          />
+        )}
+      </CardActions>
     </Card>
   );
 };

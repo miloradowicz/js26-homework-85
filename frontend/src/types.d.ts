@@ -3,6 +3,8 @@ export interface Artist {
   name: string;
   photoUrl: string | null;
   description: string | null;
+  isPublished: boolean;
+  uploadedBy: string;
 }
 
 export interface Album {
@@ -12,6 +14,8 @@ export interface Album {
   year: number;
   coverUrl: string | null;
   trackCount: number;
+  isPublished: boolean;
+  uploadedBy: string;
 }
 
 export interface Track {
@@ -21,6 +25,8 @@ export interface Track {
   trackNum: number;
   length: string | null;
   youTubeUrl: string | null;
+  isPublished: boolean;
+  uploadedBy: string;
 }
 
 export interface TrackHistoryRecord {

@@ -8,9 +8,9 @@ import { login } from '../usersThunk';
 import SignInForm from '../components/SignInForm';
 
 const SignIn = () => {
-  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleSubmit = async (data: SignInMutation) => {
     try {

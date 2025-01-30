@@ -53,6 +53,7 @@ const slice = createSlice({
         state.user = payload.user;
       })
       .addCase(logout.rejected, (state, { error }) => {
+        state.user = null;
         state.error = { error: error.message ?? 'Unknown error' };
       });
   },

@@ -80,7 +80,7 @@ const ArtistCreator = () => {
         if (isAxiosError(e) && e.response && e.response.status === 400) {
           setError(e.response.data);
         } else if (e instanceof Error) {
-          return enqueueSnackbar(e.message, { variant: 'error' });
+          return void enqueueSnackbar(e.message, { variant: 'error' });
         }
 
         console.error(e);
@@ -96,6 +96,7 @@ const ArtistCreator = () => {
         Add artist
       </Typography>
       <Box
+        py={2}
         noValidate
         component='form'
         onSubmit={handleSubmit}
