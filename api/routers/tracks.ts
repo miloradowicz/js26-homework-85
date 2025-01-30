@@ -1,7 +1,7 @@
 import express from 'express';
 import { Error } from 'mongoose';
 
-import auth, { RequestWithUser } from '../middleware/auth';
+import { RequestWithUser } from '../middleware/auth';
 import permit from '../middleware/permit';
 import Artist from '../models/Artist';
 import Album from '../models/Album';
@@ -9,7 +9,7 @@ import Track from '../models/Track';
 
 const router = express.Router();
 
-router.post('/', auth, permit('user', 'admin'), async (_req, res, next) => {
+router.post('/', permit('user', 'admin'), async (_req, res, next) => {
   const req = _req as RequestWithUser;
 
   try {
@@ -18,7 +18,7 @@ router.post('/', auth, permit('user', 'admin'), async (_req, res, next) => {
       album: req.body.album ?? null,
       trackNum: req.body.trackNum ?? null,
       length: req.body.length ?? null,
-      uploadedBy: req.user._id ?? null,
+      uploadedBy: req.user?._id ?? null,
     });
 
     res.send(track);
@@ -31,7 +31,8 @@ router.post('/', auth, permit('user', 'admin'), async (_req, res, next) => {
   }
 });
 
-router.get('/', async (req, res, next) => {
+router.get('/', async (_req, res, next) => {
+  const req = _req as RequestWithUser;
   const _artist = req.query.artist as string | undefined;
   const _album = req.query.album as string | undefined;
 
@@ -67,6 +68,11 @@ router.get('/', async (req, res, next) => {
       }
     }
 
+    const filter = !req.user
+      ? { isPublished: true }
+      : req.user.role !== 'admin'
+      ? { $or: [{ isPublished: true }, { uploadedBy: req.user._id }] }
+      : {};
     const tracks = await Album.aggregate([
       {
         $match: {
@@ -75,7 +81,7 @@ router.get('/', async (req, res, next) => {
       },
       {
         $group: {
-          _id: '$_id',
+          _id: 0,
           doc: { $push: '$$ROOT' },
         },
       },
@@ -88,7 +94,7 @@ router.get('/', async (req, res, next) => {
       {
         $lookup: {
           from: 'tracks',
-          localField: '_id',
+          localField: 'doc._id',
           foreignField: 'album',
           as: 'tracks',
         },
@@ -99,7 +105,7 @@ router.get('/', async (req, res, next) => {
         },
       },
       {
-        $sort: album ? { order: 1, trackNum: 1 } : { trackNum: 1 },
+        $sort: { 'order': 1, 'tracks.trackNum': 1 },
       },
       {
         $replaceRoot: {
@@ -110,6 +116,9 @@ router.get('/', async (req, res, next) => {
         $project: {
           __v: 0,
         },
+      },
+      {
+        $match: filter,
       },
     ]);
 
@@ -123,7 +132,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.patch('/:id/togglePublished', auth, permit('admin'), async (_req, res, next) => {
+router.patch('/:id/togglePublished', permit('admin'), async (_req, res, next) => {
   const req = _req as RequestWithUser<{ id: string }>;
   const id = req.params.id;
 
@@ -134,7 +143,7 @@ router.patch('/:id/togglePublished', auth, permit('admin'), async (_req, res, ne
       return void res.status(404).send({ error: 'Track not found.' });
     }
 
-    if (req.user.role !== 'admin') {
+    if (!req.user || req.user.role !== 'admin') {
       return void res.status(403).send({ error: 'Unauthorized' });
     }
 
@@ -150,7 +159,7 @@ router.patch('/:id/togglePublished', auth, permit('admin'), async (_req, res, ne
   }
 });
 
-router.delete('/:id', auth, permit('user', 'admin'), async (_req, res, next) => {
+router.delete('/:id', permit('user', 'admin'), async (_req, res, next) => {
   const req = _req as RequestWithUser<{ id: string }>;
   const id = req.params.id;
 
@@ -161,7 +170,7 @@ router.delete('/:id', auth, permit('user', 'admin'), async (_req, res, next) => 
       return void res.status(404).send({ error: 'Track not found.' });
     }
 
-    if (req.user.role !== 'admin' && (track.isPublished || track.uploadedBy !== req.user._id)) {
+    if (req.user?.role !== 'admin' && (track.isPublished || !req.user || !track.uploadedBy.equals(req.user._id))) {
       return void res.status(403).send({ error: 'Unauthorized' });
     }
 

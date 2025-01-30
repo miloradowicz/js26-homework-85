@@ -1,10 +1,10 @@
 import express from 'express';
 import { Error } from 'mongoose';
-
-import User from '../models/User';
-import auth, { RequestWithUser } from '../middleware/auth';
-import permit from '../middleware/permit';
 import assert from 'assert';
+
+import { RequestWithUser } from '../middleware/auth';
+import permit from '../middleware/permit';
+import User from '../models/User';
 
 const router = express.Router();
 
@@ -53,8 +53,10 @@ router.post('/sessions', async (req, res, next) => {
   }
 });
 
-router.delete('/sessions', auth, permit('user', 'admin'), async (_req, res) => {
+router.delete('/sessions', permit('user', 'admin'), async (_req, res) => {
   const req = _req as RequestWithUser;
+
+  assert(req.user);
 
   const user = await User.findById(req.user._id);
 

@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { Error } from 'mongoose';
 
-import auth, { RequestWithUser } from '../middleware/auth';
+import { RequestWithUser } from '../middleware/auth';
 import permit from '../middleware/permit';
 import { imageUpload } from '../middleware/multer';
 import Artist from '../models/Artist';
@@ -11,7 +11,6 @@ const router = express.Router();
 
 router.post(
   '/',
-  auth,
   permit('user', 'admin'),
   imageUpload.single('cover'),
   async (_req: Request, res: Response, next: NextFunction) => {
@@ -23,7 +22,7 @@ router.post(
         artist: req.body.artist ?? null,
         year: req.body.year ?? null,
         coverUrl: req.file?.filename ?? null,
-        uploadedBy: req.user._id ?? null,
+        uploadedBy: req.user?._id ?? null,
       });
 
       res.send(album);
@@ -37,7 +36,8 @@ router.post(
   }
 );
 
-router.get('/', async (req, res, next) => {
+router.get('/', async (_req, res, next) => {
+  const req = _req as RequestWithUser;
   const _artist = req.query.artist as string | undefined;
 
   try {
@@ -51,6 +51,11 @@ router.get('/', async (req, res, next) => {
       }
     }
 
+    const filter = !req.user
+      ? { isPublished: true }
+      : req.user.role !== 'admin'
+      ? { $or: [{ isPublished: true }, { uploadedBy: req.user._id }] }
+      : {};
     const albums = await Album.aggregate([
       {
         $match: artist ? { artist: artist._id } : {},
@@ -69,10 +74,12 @@ router.get('/', async (req, res, next) => {
       {
         $group: {
           _id: {
-            _id: '$_id',
-            title: '$title',
-            year: '$year',
-            coverUrl: '$coverUrl',
+            doc: {
+              $unsetField: {
+                field: 'tracks',
+                input: '$$ROOT',
+              },
+            },
           },
           trackCount: { $count: {} },
         },
@@ -80,9 +87,17 @@ router.get('/', async (req, res, next) => {
       {
         $replaceRoot: {
           newRoot: {
-            $mergeObjects: ['$$ROOT', '$_id'],
+            $mergeObjects: ['$$ROOT', '$_id.doc'],
           },
         },
+      },
+      {
+        $project: {
+          __v: 0,
+        },
+      },
+      {
+        $match: filter,
       },
     ]).sort('year');
 
@@ -96,11 +111,17 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', async (_req, res, next) => {
+  const req = _req as RequestWithUser<{ id: string }>;
   const id = req.params.id;
 
   try {
-    const album = await Album.findById(id).populate('artist');
+    const filter = !req.user
+      ? { isPublished: true }
+      : req.user.role !== 'admin'
+      ? { $or: [{ isPublished: true }, { uploadedBy: req.user._id }] }
+      : {};
+    const album = await Album.findById(id).find(filter).populate('artist');
 
     if (!album) {
       return void res.status(404).send({ error: 'Album not found.' });
@@ -116,7 +137,7 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-router.patch('/:id/togglePublished', auth, permit('admin'), async (_req, res, next) => {
+router.patch('/:id/togglePublished', permit('admin'), async (_req, res, next) => {
   const req = _req as RequestWithUser<{ id: string }>;
   const id = req.params.id;
 
@@ -127,7 +148,7 @@ router.patch('/:id/togglePublished', auth, permit('admin'), async (_req, res, ne
       return void res.status(404).send({ error: 'Album not found.' });
     }
 
-    if (req.user.role !== 'admin') {
+    if (!req.user || req.user.role !== 'admin') {
       return void res.status(403).send({ error: 'Unauthorized' });
     }
 
@@ -143,7 +164,7 @@ router.patch('/:id/togglePublished', auth, permit('admin'), async (_req, res, ne
   }
 });
 
-router.delete('/:id', auth, permit('user', 'admin'), async (_req, res, next) => {
+router.delete('/:id', permit('user', 'admin'), async (_req, res, next) => {
   const req = _req as RequestWithUser<{ id: string }>;
   const id = req.params.id;
 
@@ -154,7 +175,7 @@ router.delete('/:id', auth, permit('user', 'admin'), async (_req, res, next) => 
       return void res.status(404).send({ error: 'Album not found.' });
     }
 
-    if (req.user.role !== 'admin' && (album.isPublished || album.uploadedBy !== req.user._id)) {
+    if (req.user?.role !== 'admin' && (album.isPublished || !req.user || !album.uploadedBy.equals(req.user._id))) {
       return void res.status(403).send({ error: 'Unauthorized' });
     }
 

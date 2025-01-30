@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 
 import config from './config';
+import auth from './middleware/auth';
 import users from './routers/users';
 import artists from './routers/artists';
 import albums from './routers/albums';
@@ -14,6 +15,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
+app.use(auth);
 
 app.use('/artists', artists);
 app.use('/albums', albums);

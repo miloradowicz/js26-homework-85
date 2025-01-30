@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { Error } from 'mongoose';
 
-import auth, { RequestWithUser } from '../middleware/auth';
+import { RequestWithUser } from '../middleware/auth';
 import permit from '../middleware/permit';
 import { imageUpload } from '../middleware/multer';
 import Artist from '../models/Artist';
@@ -10,7 +10,6 @@ const router = express.Router();
 
 router.post(
   '/',
-  auth,
   permit('user', 'admin'),
   imageUpload.single('photo'),
   async (_req: Request, res: Response, next: NextFunction) => {
@@ -21,7 +20,7 @@ router.post(
         name: req.body.name ?? null,
         photoUrl: req.file?.filename ?? null,
         description: req.body.description ?? null,
-        uploadedBy: req.user._id ?? null,
+        uploadedBy: req.user?._id ?? null,
       });
 
       res.send(artist);
@@ -36,12 +35,19 @@ router.post(
 );
 
 router.get('/', async (_req, res) => {
-  const artists = await Artist.find();
+  const req = _req as RequestWithUser;
+
+  const filter = !req.user
+    ? { isPublished: true }
+    : req.user.role !== 'admin'
+    ? { $or: [{ isPublished: true }, { uploadedBy: req.user }] }
+    : {};
+  const artists = await Artist.find(filter);
 
   res.send(artists);
 });
 
-router.patch('/:id/togglePublished', auth, permit('admin'), async (_req, res, next) => {
+router.patch('/:id/togglePublished', permit('admin'), async (_req, res, next) => {
   const req = _req as RequestWithUser<{ id: string }>;
   const id = req.params.id;
 
@@ -52,7 +58,7 @@ router.patch('/:id/togglePublished', auth, permit('admin'), async (_req, res, ne
       return void res.status(404).send({ error: 'Artist not found.' });
     }
 
-    if (req.user.role !== 'admin') {
+    if (!req.user || req.user.role !== 'admin') {
       return void res.status(403).send({ error: 'Unauthorized' });
     }
 
@@ -68,7 +74,7 @@ router.patch('/:id/togglePublished', auth, permit('admin'), async (_req, res, ne
   }
 });
 
-router.delete('/:id', auth, permit('user', 'admin'), async (_req, res, next) => {
+router.delete('/:id', permit('user', 'admin'), async (_req, res, next) => {
   const req = _req as RequestWithUser<{ id: string }>;
   const id = req.params.id;
 
@@ -79,7 +85,7 @@ router.delete('/:id', auth, permit('user', 'admin'), async (_req, res, next) => 
       return void res.status(404).send({ error: 'Artist not found.' });
     }
 
-    if (req.user.role !== 'admin' && (artist.isPublished || artist.uploadedBy !== req.user._id)) {
+    if (req.user?.role !== 'admin' && (artist.isPublished || !req.user || !artist.uploadedBy.equals(req.user._id))) {
       return void res.status(403).send({ error: 'Unauthorized' });
     }
 

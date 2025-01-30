@@ -1,5 +1,6 @@
 import express from 'express';
 import { Error } from 'mongoose';
+import assert from 'assert';
 
 import auth, { RequestWithUser } from '../middleware/auth';
 import permit from '../middleware/permit';
@@ -13,7 +14,7 @@ router.post('/', auth, permit('user', 'admin'), async (_req, res, next) => {
   try {
     const trackHistory = await TrackHistory.create({
       track: req.body.track ?? null,
-      user: req.user._id ?? null,
+      user: req.user?._id ?? null,
     });
     res.send(trackHistory);
   } catch (e) {
@@ -25,13 +26,15 @@ router.post('/', auth, permit('user', 'admin'), async (_req, res, next) => {
   }
 });
 
-router.get('/', auth, permit('user', 'admin'), async (_req, res) => {
+router.get('/', permit('user', 'admin'), async (_req, res) => {
   const req = _req as RequestWithUser;
+
+  assert(req.user);
 
   const trackHistory = await TrackHistory.aggregate([
     {
       $match: {
-        user: req.user._id,
+        user: req.user?._id,
       },
     },
     {
