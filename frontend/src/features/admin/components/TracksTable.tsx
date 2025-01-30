@@ -1,33 +1,24 @@
-import {
-  TableContainer,
-  Paper,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  IconButton,
-  Tooltip,
-} from '@mui/material';
-import { enqueueSnackbar } from 'notistack';
 import { useState, useCallback, useEffect } from 'react';
+import { enqueueSnackbar } from 'notistack';
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+
+import { PopulatedTrack } from '../../../types';
 import { api } from '../../../api';
 import { useAppSelector } from '../../../app/hooks';
-import { TrackSet } from '../../../types';
 import { selectUser } from '../../users/usersSlice';
 import Loader from '../../../components/UI/Loader/Loader';
-import { CheckCircle, CheckCircleOutline, Delete, Public, PublicOff } from '@mui/icons-material';
+import TracksTableRow from './TracksTableRow';
 
 const TracksTable = () => {
   const user = useAppSelector(selectUser);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<TrackSet>();
+  const [data, setData] = useState<PopulatedTrack[]>([]);
 
   const load = useCallback(async () => {
     try {
       setLoading(true);
 
-      const { data } = await api.get<TrackSet>('tracks');
+      const { data } = await api.get<PopulatedTrack[]>('admin/tracks');
 
       setData(data);
     } catch (e) {
@@ -83,6 +74,7 @@ const TracksTable = () => {
               <TableCell align='right'>Id</TableCell>
               <TableCell align='right'>Title</TableCell>
               <TableCell align='right'>Album</TableCell>
+              <TableCell align='right'>Artist</TableCell>
               <TableCell align='right'>TrackNum</TableCell>
               <TableCell align='right'>Length</TableCell>
               <TableCell align='right'>YouTube url</TableCell>
@@ -91,37 +83,20 @@ const TracksTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.tracks.map((x) => (
-              <TableRow key={x._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                <TableCell component='th' scope='row'>
-                  {x._id}
-                </TableCell>
-                <TableCell align='right'>{x.title}</TableCell>
-                <TableCell align='right'>{x.album}</TableCell>
-                <TableCell align='right'>{x.trackNum}</TableCell>
-                <TableCell align='right'>{x.length}</TableCell>
-                <TableCell align='right'>{x.youTubeUrl}</TableCell>
-                <TableCell align='right'>
-                  <Tooltip title={x.isPublished ? 'Published' : 'Unpublished'}>
-                    {x.isPublished ? <CheckCircle /> : <CheckCircleOutline />}
-                  </Tooltip>
-                </TableCell>
-                <TableCell align='right'>{x.uploadedBy}</TableCell>
-                <TableCell align='right'>
-                  {
-                    <Tooltip title={x.isPublished ? 'Unpublish' : 'Publish'} placement='left'>
-                      <IconButton onClick={() => handleTogglePublished(x._id)}>
-                        {x.isPublished ? <PublicOff /> : <Public />}
-                      </IconButton>
-                    </Tooltip>
-                  }
-                  <Tooltip title='Delete' placement='left'>
-                    <IconButton onClick={() => handleDelete(x._id)}>
-                      <Delete />
-                    </IconButton>
-                  </Tooltip>
-                </TableCell>
-              </TableRow>
+            {data.map((x) => (
+              <TracksTableRow
+                _id={x._id}
+                title={x.title}
+                album={x.album}
+                artist={x.artist}
+                trackNum={x.trackNum}
+                length={x.length}
+                youTubeUrl={x.youTubeUrl}
+                isPublished={x.isPublished}
+                uploadedBy={x.uploadedBy}
+                onTogglePublished={() => handleTogglePublished(x._id)}
+                onDelete={() => handleDelete(x._id)}
+              />
             ))}
           </TableBody>
         </Table>

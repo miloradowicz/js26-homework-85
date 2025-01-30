@@ -2,7 +2,18 @@ import { isAxiosError } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import { Box, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material';
 
 import { TrackHistoryRecord } from '../../../types';
 import { api } from '../../../api';
@@ -51,15 +62,28 @@ const TrackHistoryViewer = () => {
         <Typography component='h1' variant='h4' gutterBottom>
           Track history
         </Typography>
-        <Stack gap={1} py={2}>
-          {data.length ? (
-            data.map((x) => (
-              <TrackHistoryListItem key={x._id} id={x._id} track={x.track.title} artist={x.artist.name} date={x.date} />
-            ))
-          ) : (
-            <Typography fontStyle='italic'>Nothing here yet.</Typography>
-          )}
-        </Stack>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 'xs' }} size='small' aria-label='Artists'>
+            <TableHead>
+              <TableRow>
+                <TableCell>Artist</TableCell>
+                <TableCell>Track</TableCell>
+                <TableCell align='right'>Last listened on</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data.map((x) => (
+                <TrackHistoryListItem
+                  key={x._id}
+                  id={x._id}
+                  track={x.track.title}
+                  artist={x.artist.name}
+                  date={x.date}
+                />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
     </>
   );

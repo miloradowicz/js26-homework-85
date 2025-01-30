@@ -9,6 +9,7 @@ import {
   Chip,
   CircularProgress,
   Stack,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { Delete, Publish } from '@mui/icons-material';
@@ -93,7 +94,11 @@ const AlbumListItem: FC<Props> = ({
           <Chip
             label='Unpublished'
             variant='outlined'
-            deleteIcon={publishing ? <CircularProgress size={18} /> : <Publish />}
+            deleteIcon={
+              <Tooltip title='Publish' placement='right'>
+                {publishing ? <CircularProgress size={18} /> : <Publish />}
+              </Tooltip>
+            }
             onDelete={user && user.role === 'admin' ? handlePublish : undefined}
           />
         )}
@@ -101,7 +106,11 @@ const AlbumListItem: FC<Props> = ({
           <Chip
             label='Uploaded'
             variant='outlined'
-            deleteIcon={deleting ? <CircularProgress size={18} /> : <Delete />}
+            deleteIcon={
+              <Tooltip title='Delete' placement='right'>
+                {deleting ? <CircularProgress size={18} /> : <Delete />}
+              </Tooltip>
+            }
             onDelete={handleDelete}
           />
         )}

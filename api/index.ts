@@ -9,6 +9,7 @@ import artists from './routers/artists';
 import albums from './routers/albums';
 import tracks from './routers/tracks';
 import trackHistory from './routers/trackHistory';
+import admin from './routers/admin';
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use('/albums', albums);
 app.use('/tracks', tracks);
 app.use('/users', users);
 app.use('/track_history', trackHistory);
+app.use('/admin', admin);
 
 (async () => {
   await mongoose.connect(new URL(config.mongo.db, config.mongo.host).href);

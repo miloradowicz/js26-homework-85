@@ -38,9 +38,20 @@ export interface TrackHistoryRecord {
   date: string;
 }
 
-export type PopulatedAlbum = Omit<Album, 'artist'> & {
-  artist: Artist;
-};
+export interface PopulatedBase {
+  uploadedBy: StrippedUser | null;
+}
+
+export type PopulatedArtist = Omit<Artist, 'uploadedBy'> & PopulatedBase;
+
+export type PopulatedAlbum = Omit<Album, 'artist' | 'uploadedBy'> & {
+  artist: Artist | null;
+} & PopulatedBase;
+
+export type PopulatedTrack = Omit<Track, 'album' | 'uploadedBy'> & {
+  album: Album | null;
+  artist: Artist | null;
+} & PopulatedBase;
 
 export interface AlbumSet {
   albums: AlbumBody[] | Album[];
@@ -95,3 +106,5 @@ export interface SignUpMutation {
   username: string;
   password: string;
 }
+
+export type StrippedUser = Omit<User, 'role' | 'token'>;

@@ -1,33 +1,24 @@
-import {
-  TableContainer,
-  Paper,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  IconButton,
-  Tooltip,
-} from '@mui/material';
-import { enqueueSnackbar } from 'notistack';
 import { useState, useCallback, useEffect } from 'react';
+import { enqueueSnackbar } from 'notistack';
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+
+import { PopulatedAlbum } from '../../../types';
 import { api } from '../../../api';
 import { useAppSelector } from '../../../app/hooks';
-import { AlbumSet } from '../../../types';
 import { selectUser } from '../../users/usersSlice';
 import Loader from '../../../components/UI/Loader/Loader';
-import { CheckCircle, CheckCircleOutline, Delete, Public, PublicOff } from '@mui/icons-material';
+import AlbumsTableRow from './AlbumsTableRow';
 
 const AlbumsTable = () => {
   const user = useAppSelector(selectUser);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<AlbumSet>();
+  const [data, setData] = useState<PopulatedAlbum[]>([]);
 
   const load = useCallback(async () => {
     try {
       setLoading(true);
 
-      const { data } = await api.get<AlbumSet>('albums');
+      const { data } = await api.get<PopulatedAlbum[]>('admin/albums');
 
       setData(data);
     } catch (e) {
@@ -92,37 +83,19 @@ const AlbumsTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.albums.map((x) => (
-              <TableRow key={x._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                <TableCell component='th' scope='row'>
-                  {x._id}
-                </TableCell>
-                <TableCell align='right'>{x.title}</TableCell>
-                <TableCell align='right'>{x.artist}</TableCell>
-                <TableCell align='right'>{x.year}</TableCell>
-                <TableCell align='right'>{x.coverUrl}</TableCell>
-                <TableCell align='right'>{x.trackCount}</TableCell>
-                <TableCell align='right'>
-                  <Tooltip title={x.isPublished ? 'Published' : 'Unpublished'}>
-                    {x.isPublished ? <CheckCircle /> : <CheckCircleOutline />}
-                  </Tooltip>
-                </TableCell>
-                <TableCell align='right'>{x.uploadedBy}</TableCell>
-                <TableCell align='right'>
-                  {
-                    <Tooltip title={x.isPublished ? 'Unpublish' : 'Publish'} placement='left'>
-                      <IconButton onClick={() => handleTogglePublished(x._id)}>
-                        {x.isPublished ? <PublicOff /> : <Public />}
-                      </IconButton>
-                    </Tooltip>
-                  }
-                  <Tooltip title='Delete' placement='left'>
-                    <IconButton onClick={() => handleDelete(x._id)}>
-                      <Delete />
-                    </IconButton>
-                  </Tooltip>
-                </TableCell>
-              </TableRow>
+            {data.map((x) => (
+              <AlbumsTableRow
+                _id={x._id}
+                title={x.title}
+                artist={x.artist}
+                year={x.year}
+                coverUrl={x.coverUrl}
+                trackCount={x.trackCount}
+                isPublished={x.isPublished}
+                uploadedBy={x.uploadedBy}
+                onTogglePublished={() => handleTogglePublished(x._id)}
+                onDelete={() => handleDelete(x._id)}
+              />
             ))}
           </TableBody>
         </Table>
