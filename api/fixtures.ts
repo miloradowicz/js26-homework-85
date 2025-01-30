@@ -32,20 +32,20 @@ const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max 
 
     const users = await User.create(
       {
-        username: 'mealy_forager',
+        username: 'admin',
         password: '1111',
         role: 'admin',
       },
       {
-        username: 'fantastic_presume',
+        username: 'fantastic_user',
         password: '2222',
       },
       {
-        username: 'doting_thread',
+        username: 'doting_user',
         password: '3333',
       },
       {
-        username: 'amused_possession',
+        username: 'amused_user',
         password: '4444',
       }
     );
