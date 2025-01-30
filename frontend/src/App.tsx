@@ -15,6 +15,7 @@ import TrackHistoryViewer from './features/track-history/containers/TrackHistory
 import SignIn from './features/users/containers/SignIn';
 import SignUp from './features/users/containers/SignUp';
 import Page404 from './components/Page404/Page404';
+import AdminPage from './features/admin/AdminPage';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -63,6 +64,18 @@ const App = () => {
           />
           <Route path='/login' element={<SignIn />} />
           <Route path='/register' element={<SignUp />} />
+          <Route
+            path='/admin'
+            element={
+              <ProtectedRoute isAllowed={user?.role === 'admin'}>
+                <AdminPage />
+              </ProtectedRoute>
+            }
+          >
+            <Route path='/artists' element={<SignUp />} />
+            <Route path='/albums' element={<SignUp />} />
+            <Route path='/tracks' element={<SignUp />} />
+          </Route>
           <Route path='*' element={<Page404 />} />
         </Routes>
       </Container>
