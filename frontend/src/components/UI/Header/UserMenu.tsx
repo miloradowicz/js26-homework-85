@@ -21,7 +21,7 @@ const UserMenu: FC<Props> = ({ user }) => {
     navigate(url);
   };
 
-  const handleClick: MouseEventHandler = async (e) => {
+  const handleClick: MouseEventHandler = async () => {
     setOpen(false);
     await dispatch(logout());
   };

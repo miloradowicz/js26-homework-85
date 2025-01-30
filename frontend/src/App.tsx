@@ -7,7 +7,7 @@ import Header from './components/UI/Header/Header';
 import ArtistsViewer from './features/artists/containers/ArtistsViewer';
 import AlbumsViewer from './features/albums/containers/AlbumsViewer';
 import TracksViewer from './features/tracks/containers/TracksViewer';
-import ProtectedRoute from './components/PortectedRoute/ProtectedRoute';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import ArtistCreator from './features/artists/containers/ArtistCreator';
 import AlbumCreator from './features/albums/containers/AlbumCreator';
 import TrackCreator from './features/tracks/containers/TrackCreator';

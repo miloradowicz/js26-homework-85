@@ -94,7 +94,7 @@ const AlbumListItem: FC<Props> = ({
             label='Unpublished'
             variant='outlined'
             deleteIcon={publishing ? <CircularProgress size={18} /> : <Publish />}
-            onDelete={handlePublish}
+            onDelete={user && user.role === 'admin' ? handlePublish : undefined}
           />
         )}
         {user && (user.role === 'admin' || uploadedBy === user._id) && (
