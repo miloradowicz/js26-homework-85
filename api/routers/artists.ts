@@ -63,7 +63,7 @@ router.patch('/:id/togglePublished', permit('admin'), async (_req, res, next) =>
     }
 
     artist.isPublished = !artist.isPublished;
-    await artist.save();
+    await artist.save({ validateModifiedOnly: true });
     res.send(artist);
   } catch (e) {
     if (e instanceof Error.CastError) {

@@ -148,7 +148,7 @@ router.patch('/:id/togglePublished', permit('admin'), async (_req, res, next) =>
     }
 
     track.isPublished = !track.isPublished;
-    await track.save();
+    await track.save({ validateModifiedOnly: true });
     res.send(track);
   } catch (e) {
     if (e instanceof Error.CastError) {
