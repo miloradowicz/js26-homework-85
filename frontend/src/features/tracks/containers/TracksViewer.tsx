@@ -93,29 +93,27 @@ const TracksViewer = () => {
         <Typography component='h1' variant='h4' gutterBottom>
           Tracks
         </Typography>
-        <Box py={2}>
+        <Stack gap={1} py={2}>
           {data?.tracks.length ? (
-            <Stack gap={1}>
-              {data?.tracks?.map((x) => (
-                <TrackListItem
-                  key={x._id}
-                  id={x._id}
-                  title={x.title}
-                  trackNum={x.trackNum}
-                  length={x.length}
-                  youTubeUrl={x.youTubeUrl}
-                  isPublished={x.isPublished}
-                  uploadedBy={x.uploadedBy}
-                  onPlay={user ? () => handlePlay(x._id) : undefined}
-                  onPublish={() => handlePublish(x._id)}
-                  onDelete={() => handleDelete(x._id)}
-                />
-              ))}
-            </Stack>
+            data?.tracks?.map((x) => (
+              <TrackListItem
+                key={x._id}
+                id={x._id}
+                title={x.title}
+                trackNum={x.trackNum}
+                length={x.length}
+                youTubeUrl={x.youTubeUrl}
+                isPublished={x.isPublished}
+                uploadedBy={x.uploadedBy}
+                onPlay={user ? () => handlePlay(x._id) : undefined}
+                onPublish={() => handlePublish(x._id)}
+                onDelete={() => handleDelete(x._id)}
+              />
+            ))
           ) : (
             <Typography fontStyle='italic'>Nothing here yet.</Typography>
           )}
-        </Box>
+        </Stack>
       </Box>
     </>
   );

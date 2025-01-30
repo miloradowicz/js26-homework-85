@@ -31,16 +31,12 @@ export interface Track {
 
 export interface TrackHistoryRecord {
   _id: string;
-  track: TrackBody;
-  album: AlbumBody;
+  track: Track;
+  album: Album;
   artist: Artist;
   user: string;
   date: string;
 }
-
-export type AlbumBody = Omit<Album, 'artist'>;
-
-export type TrackBody = Omit<Track, 'album'>;
 
 export type PopulatedAlbum = Omit<Album, 'artist'> & {
   artist: Artist;

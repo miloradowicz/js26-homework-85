@@ -81,30 +81,28 @@ const ArtistViewer = () => {
         <Typography component='h1' variant='h4' gutterBottom>
           Albums
         </Typography>
-        <Box py={2}>
+        <Grid container spacing={1} py={2} justifyContent={{ sx: 'center' }}>
           {data?.albums.length ? (
-            <Grid container spacing={1} justifyContent={{ sx: 'center' }}>
-              {data.albums.map((x) => (
-                <Grid key={x._id} size={{ xs: 12, sm: 6, md: 4 }}>
-                  <AlbumListItem
-                    key={x._id}
-                    id={x._id}
-                    title={x.title}
-                    year={x.year}
-                    coverUrl={x.coverUrl}
-                    trackCount={x.trackCount}
-                    isPublished={x.isPublished}
-                    uploadedBy={x.uploadedBy}
-                    onPublish={() => handlePublish(x._id)}
-                    onDelete={() => handleDelete(x._id)}
-                  />
-                </Grid>
-              ))}
-            </Grid>
+            data.albums.map((x) => (
+              <Grid key={x._id} size={{ xs: 12, sm: 6, md: 4 }}>
+                <AlbumListItem
+                  key={x._id}
+                  id={x._id}
+                  title={x.title}
+                  year={x.year}
+                  coverUrl={x.coverUrl}
+                  trackCount={x.trackCount}
+                  isPublished={x.isPublished}
+                  uploadedBy={x.uploadedBy}
+                  onPublish={() => handlePublish(x._id)}
+                  onDelete={() => handleDelete(x._id)}
+                />
+              </Grid>
+            ))
           ) : (
             <Typography fontStyle='italic'>Nothing here yet.</Typography>
           )}
-        </Box>
+        </Grid>
       </Box>
     </>
   );

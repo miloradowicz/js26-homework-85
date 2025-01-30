@@ -16,6 +16,9 @@ import SignIn from './features/users/containers/SignIn';
 import SignUp from './features/users/containers/SignUp';
 import Page404 from './components/Page404/Page404';
 import AdminPage from './features/admin/AdminPage';
+import ArtistsTable from './features/admin/components/ArtistsTable';
+import AlbumsTable from './features/admin/components/AlbumsTable';
+import TracksTable from './features/admin/components/TracksTable';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -72,9 +75,10 @@ const App = () => {
               </ProtectedRoute>
             }
           >
-            <Route path='/artists' element={<SignUp />} />
-            <Route path='/albums' element={<SignUp />} />
-            <Route path='/tracks' element={<SignUp />} />
+            <Route index element={<ArtistsTable />} />
+            <Route path='artists' element={<ArtistsTable />} />
+            <Route path='albums' element={<AlbumsTable />} />
+            <Route path='tracks' element={<TracksTable />} />
           </Route>
           <Route path='*' element={<Page404 />} />
         </Routes>

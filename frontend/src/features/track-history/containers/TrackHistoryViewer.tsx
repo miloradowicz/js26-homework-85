@@ -51,28 +51,15 @@ const TrackHistoryViewer = () => {
         <Typography component='h1' variant='h4' gutterBottom>
           Track history
         </Typography>
-        <Box py={2}>
-          {user && (
-            <Typography gutterBottom variant='h6' component='div'>
-              Track History
-            </Typography>
-          )}
+        <Stack gap={1} py={2}>
           {data.length ? (
-            <Stack gap={1}>
-              {data.map((x) => (
-                <TrackHistoryListItem
-                  key={x._id}
-                  id={x._id}
-                  track={x.track.title}
-                  artist={x.artist.name}
-                  date={x.date}
-                />
-              ))}
-            </Stack>
+            data.map((x) => (
+              <TrackHistoryListItem key={x._id} id={x._id} track={x.track.title} artist={x.artist.name} date={x.date} />
+            ))
           ) : (
             <Typography fontStyle='italic'>Nothing here yet.</Typography>
           )}
-        </Box>
+        </Stack>
       </Box>
     </>
   );

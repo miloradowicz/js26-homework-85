@@ -13,8 +13,10 @@ interface Props {
 const UserMenu: FC<Props> = ({ user }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const ref = useRef(null);
+
   const [open, setOpen] = useState(false);
+
+  const ref = useRef(null);
 
   const closeAndNavigate = (url: string) => {
     setOpen(false);
@@ -32,6 +34,7 @@ const UserMenu: FC<Props> = ({ user }) => {
         {user.username}
       </Button>
       <Menu anchorEl={ref.current} open={open} onClose={() => setOpen(false)}>
+        {user.role === 'admin' && <MenuItem onClick={() => closeAndNavigate('/admin')}>Admin page</MenuItem>}
         <MenuItem onClick={() => closeAndNavigate('/artist/new')}>Add new artist</MenuItem>
         <MenuItem onClick={() => closeAndNavigate('/album/new')}>Add new album</MenuItem>
         <MenuItem onClick={() => closeAndNavigate('/track/new')}>Add new track</MenuItem>

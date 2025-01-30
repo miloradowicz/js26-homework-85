@@ -71,28 +71,26 @@ const ArtistsViewer = () => {
         <Typography component='h1' variant='h4' gutterBottom>
           Artists
         </Typography>
-        <Box py={2}>
+        <Grid container spacing={1} py={2} justifyContent={{ sx: 'center' }}>
           {data.length ? (
-            <Grid container spacing={1} justifyContent={{ sx: 'center' }}>
-              {data.map((x) => (
-                <Grid key={x._id} size={{ xs: 12, sm: 6, md: 4 }}>
-                  <ArtistListItem
-                    id={x._id}
-                    name={x.name}
-                    photoUrl={x.photoUrl}
-                    description={x.description}
-                    isPublished={x.isPublished}
-                    uploadedBy={x.uploadedBy}
-                    onPublish={() => handlePublish(x._id)}
-                    onDelete={() => handleDelete(x._id)}
-                  />
-                </Grid>
-              ))}
-            </Grid>
+            data.map((x) => (
+              <Grid key={x._id} size={{ xs: 12, sm: 6, md: 4 }}>
+                <ArtistListItem
+                  id={x._id}
+                  name={x.name}
+                  photoUrl={x.photoUrl}
+                  description={x.description}
+                  isPublished={x.isPublished}
+                  uploadedBy={x.uploadedBy}
+                  onPublish={() => handlePublish(x._id)}
+                  onDelete={() => handleDelete(x._id)}
+                />
+              </Grid>
+            ))
           ) : (
             <Typography fontStyle='italic'>Nothing here yet.</Typography>
           )}
-        </Box>
+        </Grid>
       </Box>
     </>
   );
