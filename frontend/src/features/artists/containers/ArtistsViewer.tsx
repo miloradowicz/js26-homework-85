@@ -8,6 +8,7 @@ import { useAppSelector } from '../../../app/hooks';
 import { selectUser } from '../../users/usersSlice';
 import Loader from '../../../components/UI/Loader/Loader';
 import ArtistListItem from '../components/ArtistListItem';
+import { isAxiosError } from 'axios';
 
 const ArtistsViewer = () => {
   const user = useAppSelector(selectUser);
@@ -22,8 +23,10 @@ const ArtistsViewer = () => {
 
       setData(data);
     } catch (e) {
-      if (e instanceof Error) {
-        return enqueueSnackbar(e.message, { variant: 'error' });
+      if (isAxiosError(e) && e.response?.data.error) {
+        return void enqueueSnackbar(`${e.message}: ${e.response.data.error}`, { variant: 'error' });
+      } else if (e instanceof Error) {
+        return void enqueueSnackbar(e.message, { variant: 'error' });
       }
 
       console.error(e);
@@ -42,7 +45,9 @@ const ArtistsViewer = () => {
 
       load();
     } catch (e) {
-      if (e instanceof Error) {
+      if (isAxiosError(e) && e.response?.data.error) {
+        return void enqueueSnackbar(`${e.message}: ${e.response.data.error}`, { variant: 'error' });
+      } else if (e instanceof Error) {
         return void enqueueSnackbar(e.message, { variant: 'error' });
       }
 
@@ -56,7 +61,9 @@ const ArtistsViewer = () => {
 
       load();
     } catch (e) {
-      if (e instanceof Error) {
+      if (isAxiosError(e) && e.response?.data.error) {
+        return void enqueueSnackbar(`${e.message}: ${e.response.data.error}`, { variant: 'error' });
+      } else if (e instanceof Error) {
         return void enqueueSnackbar(e.message, { variant: 'error' });
       }
 

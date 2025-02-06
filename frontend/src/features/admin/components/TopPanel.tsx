@@ -1,11 +1,12 @@
 import { Box, Tab, Tabs } from '@mui/material';
 import { SyntheticEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMatch, useNavigate } from 'react-router-dom';
 
 const TopPanel = () => {
   const navigate = useNavigate();
+  const match = useMatch('admin/:sub');
 
-  const [selected, setSelected] = useState('albums');
+  const [selected, setSelected] = useState(match?.params.sub);
 
   const handleChange = (_: SyntheticEvent, value: string) => {
     setSelected(value);

@@ -15,7 +15,7 @@ import {
 import { Delete, Publish } from '@mui/icons-material';
 
 import { baseURL } from '../../../constants';
-import img404 from '../../../assets/images/404.svg';
+import noImg from '../../../assets/images/no-img.svg';
 import { useAppSelector } from '../../../app/hooks';
 import { selectUser } from '../../users/usersSlice';
 
@@ -73,9 +73,9 @@ const AlbumListItem: FC<Props> = ({
           component='img'
           height='180'
           width='200'
-          image={coverUrl ? new URL(coverUrl, new URL('images/', baseURL)).href : img404}
+          image={coverUrl ? new URL(coverUrl, new URL('images/', baseURL)).href : noImg}
           alt={title}
-          sx={{ objectFit: 'cover', objectPosition: 'center' }}
+          sx={{ objectFit: coverUrl ? 'cover' : 'contain', objectPosition: 'center' }}
         />
         <CardContent>
           <Typography gutterBottom variant='h5' component='div'>
@@ -102,7 +102,7 @@ const AlbumListItem: FC<Props> = ({
             onDelete={user && user.role === 'admin' ? handlePublish : undefined}
           />
         )}
-        {user && (user.role === 'admin' || uploadedBy === user._id) && (
+        {user && (user.role === 'admin' || (!isPublished && uploadedBy === user._id)) && (
           <Chip
             label='Uploaded'
             variant='outlined'
@@ -119,4 +119,4 @@ const AlbumListItem: FC<Props> = ({
   );
 };
 
-export default memo(AlbumListItem, (prev, next) => prev.id === next.id);
+export default memo(AlbumListItem, (prev, next) => prev.id === next.id && prev.isPublished === next.isPublished);

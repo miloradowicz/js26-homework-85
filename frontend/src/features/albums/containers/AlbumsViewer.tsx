@@ -31,9 +31,11 @@ const ArtistViewer = () => {
     } catch (e) {
       if (isAxiosError(e) && (e.status === 404 || e.status === 400)) {
         const locationWithoutId = location.pathname.slice(0, location.pathname.lastIndexOf('/'));
-        return navigate(`${locationWithoutId}/not-found`);
+        return void navigate(`${locationWithoutId}/not-found`);
+      } else if (isAxiosError(e) && e.response?.data.error) {
+        return void enqueueSnackbar(`${e.message}: ${e.response.data.error}`, { variant: 'error' });
       } else if (e instanceof Error) {
-        return enqueueSnackbar(e.message, { variant: 'error' });
+        return void enqueueSnackbar(e.message, { variant: 'error' });
       }
 
       console.error(e);
@@ -52,7 +54,9 @@ const ArtistViewer = () => {
 
       load();
     } catch (e) {
-      if (e instanceof Error) {
+      if (isAxiosError(e) && e.response?.data.error) {
+        return void enqueueSnackbar(`${e.message}: ${e.response.data.error}`, { variant: 'error' });
+      } else if (e instanceof Error) {
         return void enqueueSnackbar(e.message, { variant: 'error' });
       }
 
@@ -66,7 +70,9 @@ const ArtistViewer = () => {
 
       load();
     } catch (e) {
-      if (e instanceof Error) {
+      if (isAxiosError(e) && e.response?.data.error) {
+        return void enqueueSnackbar(`${e.message}: ${e.response.data.error}`, { variant: 'error' });
+      } else if (e instanceof Error) {
         return void enqueueSnackbar(e.message, { variant: 'error' });
       }
 

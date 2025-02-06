@@ -31,12 +31,14 @@ const TracksViewer = () => {
     } catch (e) {
       if (isAxiosError(e) && (e.status === 404 || e.status === 400)) {
         const locationWithoutId = location.pathname.slice(0, location.pathname.lastIndexOf('/'));
-        navigate(`${locationWithoutId}/not-found`);
+        return void navigate(`${locationWithoutId}/not-found`);
+      } else if (isAxiosError(e) && e.response?.data.error) {
+        return void enqueueSnackbar(`${e.message}: ${e.response.data.error}`, { variant: 'error' });
       } else if (e instanceof Error) {
-        enqueueSnackbar(e.message, { variant: 'error' });
-      } else {
-        console.error(e);
+        return void enqueueSnackbar(e.message, { variant: 'error' });
       }
+
+      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -50,11 +52,13 @@ const TracksViewer = () => {
     try {
       await api.post<TrackSet>('track_history', { track: id });
     } catch (e) {
-      if (e instanceof Error) {
-        enqueueSnackbar(e.message, { variant: 'error' });
-      } else {
-        console.error(e);
+      if (isAxiosError(e) && e.response?.data.error) {
+        return void enqueueSnackbar(`${e.message}: ${e.response.data.error}`, { variant: 'error' });
+      } else if (e instanceof Error) {
+        return void enqueueSnackbar(e.message, { variant: 'error' });
       }
+
+      console.error(e);
     }
   }, []);
 
@@ -64,7 +68,9 @@ const TracksViewer = () => {
 
       load();
     } catch (e) {
-      if (e instanceof Error) {
+      if (isAxiosError(e) && e.response?.data.error) {
+        return void enqueueSnackbar(`${e.message}: ${e.response.data.error}`, { variant: 'error' });
+      } else if (e instanceof Error) {
         return void enqueueSnackbar(e.message, { variant: 'error' });
       }
 
@@ -78,7 +84,9 @@ const TracksViewer = () => {
 
       load();
     } catch (e) {
-      if (e instanceof Error) {
+      if (isAxiosError(e) && e.response?.data.error) {
+        return void enqueueSnackbar(`${e.message}: ${e.response.data.error}`, { variant: 'error' });
+      } else if (e instanceof Error) {
         return void enqueueSnackbar(e.message, { variant: 'error' });
       }
 

@@ -22,6 +22,7 @@ export interface Track {
   _id: string;
   title: string;
   album: string;
+  artist: string;
   trackNum: number;
   length: string | null;
   youTubeUrl: string | null;
@@ -89,6 +90,8 @@ export interface AuthenticationError {
 export interface User {
   _id: string;
   username: string;
+  displayName: string;
+  avatarUrl: string | null;
   role: 'user' | 'admin';
   token: string;
 }

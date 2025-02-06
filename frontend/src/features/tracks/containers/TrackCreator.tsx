@@ -40,7 +40,9 @@ const TrackCreator = () => {
 
       setArtists(data);
     } catch (e) {
-      if (e instanceof Error) {
+      if (isAxiosError(e) && e.response?.data.error) {
+        return void enqueueSnackbar(`${e.message}: ${e.response.data.error}`, { variant: 'error' });
+      } else if (e instanceof Error) {
         return void enqueueSnackbar(e.message, { variant: 'error' });
       }
 
@@ -68,7 +70,9 @@ const TrackCreator = () => {
 
       setAlbums(data);
     } catch (e) {
-      if (e instanceof Error) {
+      if (isAxiosError(e) && e.response?.data.error) {
+        return void enqueueSnackbar(`${e.message}: ${e.response.data.error}`, { variant: 'error' });
+      } else if (e instanceof Error) {
         return void enqueueSnackbar(e.message, { variant: 'error' });
       }
 
@@ -101,7 +105,9 @@ const TrackCreator = () => {
         setData(initialData);
       } catch (e) {
         if (isAxiosError(e) && e.response && e.response.status === 400) {
-          setError(e.response.data);
+          return void setError(e.response.data);
+        } else if (isAxiosError(e) && e.response?.data.error) {
+          return void enqueueSnackbar(`${e.message}: ${e.response.data.error}`, { variant: 'error' });
         } else if (e instanceof Error) {
           return void enqueueSnackbar(e.message, { variant: 'error' });
         }
@@ -120,8 +126,8 @@ const TrackCreator = () => {
       </Typography>
       <Box
         py={2}
-        noValidate
         component='form'
+        noValidate
         onSubmit={handleSubmit}
         sx={{
           marginTop: 8,
@@ -226,7 +232,14 @@ const TrackCreator = () => {
             />
           </Grid>
           <Grid size={12}>
-            <Button fullWidth type='submit' loading={loading} startIcon={<Create />} sx={{ p: 3 }}>
+            <Button
+              fullWidth
+              type='submit'
+              loading={loading}
+              startIcon={<Create />}
+              sx={{ p: 3 }}
+              disabled={!!(error?.errors && Object.entries(error?.errors).length)}
+            >
               Add
             </Button>
           </Grid>

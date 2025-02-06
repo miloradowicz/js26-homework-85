@@ -125,7 +125,7 @@ const TrackListItem: FC<Props> = ({
             onDelete={user && user.role === 'admin' ? handlePublish : undefined}
           />
         )}
-        {user && (user.role === 'admin' || uploadedBy === user._id) && (
+        {user && (user.role === 'admin' || (!isPublished && uploadedBy === user._id)) && (
           <Chip
             label='Uploaded'
             variant='outlined'
@@ -142,4 +142,4 @@ const TrackListItem: FC<Props> = ({
   );
 };
 
-export default memo(TrackListItem, (prev, next) => prev.id === next.id);
+export default memo(TrackListItem, (prev, next) => prev.id === next.id && prev.isPublished === next.isPublished);

@@ -85,8 +85,12 @@ router.delete('/:id', permit('user', 'admin'), async (_req, res, next) => {
       return void res.status(404).send({ error: 'Artist not found.' });
     }
 
-    if (req.user?.role !== 'admin' && (artist.isPublished || !req.user || !artist.uploadedBy.equals(req.user._id))) {
+    if (req.user?.role !== 'admin' && (!req.user || !artist.uploadedBy.equals(req.user._id))) {
       return void res.status(403).send({ error: 'Unauthorized' });
+    }
+
+    if (req.user?.role !== 'admin' && artist.isPublished) {
+      return void res.status(403).send({ error: 'Cannot delete published artist' });
     }
 
     await artist.deleteOne();

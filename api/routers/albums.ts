@@ -54,7 +54,7 @@ router.get('/', async (_req, res, next) => {
     const filter = !req.user
       ? { isPublished: true }
       : req.user.role !== 'admin'
-      ? { $or: [{ isPublished: true }, { uploadedBy: req.user._id }] }
+      ? { $or: [{ isPublished: true }, { uploadedBy: req.user }] }
       : {};
     const albums = await Album.aggregate([
       {
@@ -69,9 +69,6 @@ router.get('/', async (_req, res, next) => {
         },
       },
       {
-        $unwind: '$tracks',
-      },
-      {
         $group: {
           _id: {
             doc: {
@@ -81,7 +78,7 @@ router.get('/', async (_req, res, next) => {
               },
             },
           },
-          trackCount: { $count: {} },
+          trackCount: { $sum: { $size: '$tracks' } },
         },
       },
       {
@@ -175,8 +172,12 @@ router.delete('/:id', permit('user', 'admin'), async (_req, res, next) => {
       return void res.status(404).send({ error: 'Album not found.' });
     }
 
-    if (req.user?.role !== 'admin' && (album.isPublished || !req.user || !album.uploadedBy.equals(req.user._id))) {
+    if (req.user?.role !== 'admin' && (!req.user || !album.uploadedBy.equals(req.user._id))) {
       return void res.status(403).send({ error: 'Unauthorized' });
+    }
+
+    if (req.user?.role !== 'admin' && album.isPublished) {
+      return void res.status(403).send({ error: 'Cannot delete published album' });
     }
 
     await album.deleteOne();

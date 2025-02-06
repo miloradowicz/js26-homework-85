@@ -5,7 +5,6 @@ import { useSnackbar } from 'notistack';
 import {
   Box,
   Paper,
-  Stack,
   Table,
   TableBody,
   TableCell,
@@ -40,12 +39,14 @@ const TrackHistoryViewer = () => {
       setData(data);
     } catch (e) {
       if (isAxiosError(e) && e.status === 401) {
-        navigate('/login');
+        return void navigate('/login');
+      } else if (isAxiosError(e) && e.response?.data.error) {
+        return void enqueueSnackbar(`${e.message}: ${e.response.data.error}`, { variant: 'error' });
       } else if (e instanceof Error) {
-        enqueueSnackbar(e.message, { variant: 'error' });
-      } else {
-        console.error(e);
+        return void enqueueSnackbar(e.message, { variant: 'error' });
       }
+
+      console.error(e);
     } finally {
       setLoading(false);
     }

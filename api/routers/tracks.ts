@@ -73,43 +73,53 @@ router.get('/', async (_req, res, next) => {
       : req.user.role !== 'admin'
       ? { $or: [{ isPublished: true }, { uploadedBy: req.user._id }] }
       : {};
-    const tracks = await Album.aggregate([
+    const tracks = await Track.aggregate([
       {
-        $match: {
-          $and: [artist ? { artist: artist._id } : {}, album ? { _id: album._id } : {}],
+        $lookup: {
+          from: 'albums',
+          localField: 'album',
+          foreignField: '_id',
+          as: 'album',
         },
       },
       {
-        $group: {
-          _id: 0,
-          doc: { $push: '$$ROOT' },
-        },
-      },
-      {
-        $unwind: {
-          path: '$doc',
-          includeArrayIndex: 'order',
-        },
+        $unwind: '$album',
       },
       {
         $lookup: {
-          from: 'tracks',
-          localField: 'doc._id',
-          foreignField: 'album',
-          as: 'tracks',
+          from: 'artists',
+          localField: 'album.artist',
+          foreignField: '_id',
+          as: 'artist',
         },
       },
       {
-        $unwind: {
-          path: '$tracks',
+        $unwind: '$artist',
+      },
+      {
+        $match: {
+          $and: [artist ? { 'artist._id': artist._id } : {}, album ? { 'album._id': album._id } : {}],
         },
       },
       {
-        $sort: { 'order': 1, 'tracks.trackNum': 1 },
+        $sort: { 'artist.name': 1, 'album.year': 1, 'trackNum': 1 },
       },
       {
-        $replaceRoot: {
-          newRoot: '$tracks',
+        $replaceWith: {
+          $setField: {
+            field: 'album',
+            value: '$album._id',
+            input: '$$ROOT',
+          },
+        },
+      },
+      {
+        $replaceWith: {
+          $setField: {
+            field: 'artist',
+            value: '$artist._id',
+            input: '$$ROOT',
+          },
         },
       },
       {
@@ -170,8 +180,12 @@ router.delete('/:id', permit('user', 'admin'), async (_req, res, next) => {
       return void res.status(404).send({ error: 'Track not found.' });
     }
 
-    if (req.user?.role !== 'admin' && (track.isPublished || !req.user || !track.uploadedBy.equals(req.user._id))) {
+    if (req.user?.role !== 'admin' && (!req.user || !track.uploadedBy.equals(req.user._id))) {
       return void res.status(403).send({ error: 'Unauthorized' });
+    }
+
+    if (req.user?.role !== 'admin' && track.isPublished) {
+      return void res.status(403).send({ error: 'Cannot delete published track' });
     }
 
     await track.deleteOne();
