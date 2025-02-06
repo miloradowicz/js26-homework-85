@@ -9,7 +9,7 @@ import permit from '../middleware/permit';
 import { imageUpload } from '../middleware/multer';
 import User from '../models/User';
 
-const client = new OAuth2Client(config.google.clientId);
+const client = new OAuth2Client(config.google.clientId, config.google.clientSecret);
 
 const router = express.Router();
 
