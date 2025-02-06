@@ -25,7 +25,10 @@ const schema = new mongoose.Schema(
         },
         {
           validator: async function (this: ReturnType<typeof Track.hydrate>, value: number) {
-            return !(await Track.findOne({ album: this.album, trackNum: value }));
+            return !(await Track.findOne({
+              album: this.album,
+              trackNum: value,
+            }));
           },
           message: 'Track with the same track number already exists in the album',
         },
@@ -51,7 +54,7 @@ const schema = new mongoose.Schema(
   },
   {
     strict: 'throw',
-  }
+  },
 );
 
 schema.set('toJSON', {

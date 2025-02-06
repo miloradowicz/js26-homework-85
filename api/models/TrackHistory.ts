@@ -31,7 +31,7 @@ const schema = new mongoose.Schema(
   {
     strict: 'throw',
     versionKey: false,
-  }
+  },
 );
 
 export default mongoose.model('TrackHistory', schema);

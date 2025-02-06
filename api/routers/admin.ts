@@ -9,7 +9,10 @@ import User from '../models/User';
 const router = express.Router();
 
 router.get('/artists', permit('admin'), async (_req, res) => {
-  const artists = await Artist.find().populate('uploadedBy', { role: 0, token: 0 });
+  const artists = await Artist.find().populate('uploadedBy', {
+    role: 0,
+    token: 0,
+  });
 
   res.send(artists);
 });
@@ -65,8 +68,14 @@ router.get('/tracks', permit('admin'), async (_req, res) => {
     },
   ]);
 
-  tracks = await Artist.populate(tracks, { path: 'artist', select: { __v: 0 } });
-  tracks = await User.populate(tracks, { path: 'uploadedBy', select: { role: 0, token: 0, __v: 0 } });
+  tracks = await Artist.populate(tracks, {
+    path: 'artist',
+    select: { __v: 0 },
+  });
+  tracks = await User.populate(tracks, {
+    path: 'uploadedBy',
+    select: { role: 0, token: 0, __v: 0 },
+  });
 
   res.send(tracks);
 });

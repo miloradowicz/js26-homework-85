@@ -33,7 +33,7 @@ router.post(
 
       next(e);
     }
-  }
+  },
 );
 
 router.get('/', async (_req, res, next) => {
@@ -54,8 +54,8 @@ router.get('/', async (_req, res, next) => {
     const filter = !req.user
       ? { isPublished: true }
       : req.user.role !== 'admin'
-      ? { $or: [{ isPublished: true }, { uploadedBy: req.user }] }
-      : {};
+        ? { $or: [{ isPublished: true }, { uploadedBy: req.user }] }
+        : {};
     const albums = await Album.aggregate([
       {
         $match: artist ? { artist: artist._id } : {},
@@ -116,8 +116,8 @@ router.get('/:id', async (_req, res, next) => {
     const filter = !req.user
       ? { isPublished: true }
       : req.user.role !== 'admin'
-      ? { $or: [{ isPublished: true }, { uploadedBy: req.user._id }] }
-      : {};
+        ? { $or: [{ isPublished: true }, { uploadedBy: req.user._id }] }
+        : {};
     const album = await Album.findById(id).find(filter).populate('artist');
 
     if (!album) {

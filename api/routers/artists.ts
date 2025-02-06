@@ -31,7 +31,7 @@ router.post(
 
       next(e);
     }
-  }
+  },
 );
 
 router.get('/', async (_req, res) => {
@@ -40,8 +40,8 @@ router.get('/', async (_req, res) => {
   const filter = !req.user
     ? { isPublished: true }
     : req.user.role !== 'admin'
-    ? { $or: [{ isPublished: true }, { uploadedBy: req.user }] }
-    : {};
+      ? { $or: [{ isPublished: true }, { uploadedBy: req.user }] }
+      : {};
   const artists = await Artist.find(filter);
 
   res.send(artists);

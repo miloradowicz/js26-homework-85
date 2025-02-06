@@ -71,8 +71,8 @@ router.get('/', async (_req, res, next) => {
     const filter = !req.user
       ? { isPublished: true }
       : req.user.role !== 'admin'
-      ? { $or: [{ isPublished: true }, { uploadedBy: req.user._id }] }
-      : {};
+        ? { $or: [{ isPublished: true }, { uploadedBy: req.user._id }] }
+        : {};
     const tracks = await Track.aggregate([
       {
         $lookup: {
@@ -102,7 +102,7 @@ router.get('/', async (_req, res, next) => {
         },
       },
       {
-        $sort: { 'artist.name': 1, 'album.year': 1, 'trackNum': 1 },
+        $sort: { 'artist.name': 1, 'album.year': 1, trackNum: 1 },
       },
       {
         $replaceWith: {

@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import 'dotenv/config';
 
 import config from './config';
 import auth from './middleware/auth';
@@ -10,6 +11,8 @@ import albums from './routers/albums';
 import tracks from './routers/tracks';
 import trackHistory from './routers/trackHistory';
 import admin from './routers/admin';
+
+console.log(process.env.GOOGLE_CLIENT_ID);
 
 const app = express();
 
