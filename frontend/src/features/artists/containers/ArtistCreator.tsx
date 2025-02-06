@@ -74,7 +74,12 @@ const ArtistCreator = () => {
       e.preventDefault();
 
       try {
-        await api.post('/artists', data);
+        const body = new FormData();
+        body.append('name', data.name);
+        body.append('photo', data.photo);
+        body.append('description', data.description);
+
+        await api.post('/artists', body);
         setData(initialData);
       } catch (e) {
         if (isAxiosError(e) && e.response && e.response.status === 400) {

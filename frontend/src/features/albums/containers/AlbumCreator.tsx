@@ -98,7 +98,13 @@ const AlbumCreator = () => {
       e.preventDefault();
 
       try {
-        await api.post('/albums', data);
+        const body = new FormData();
+        body.append('title', data.title);
+        body.append('artist', data.artist);
+        body.append('year', data.year);
+        body.append('cover', data.cover);
+
+        await api.post('/albums', body);
         setData(initialData);
       } catch (e) {
         if (isAxiosError(e) && e.response && e.response.status === 400) {
