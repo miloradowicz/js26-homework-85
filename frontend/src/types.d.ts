@@ -108,6 +108,8 @@ export interface SignInMutation {
 export interface SignUpMutation {
   username: string;
   password: string;
+  displayName: string;
+  avatar: File | null;
 }
 
 export type StrippedUser = Omit<User, 'role' | 'token'>;

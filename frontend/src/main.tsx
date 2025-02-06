@@ -6,10 +6,12 @@ import { BrowserRouter } from 'react-router-dom';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { SnackbarProvider } from 'notistack';
 import { CssBaseline } from '@mui/material';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import '@fontsource/roboto/cyrillic.css';
 
-import { persistor, store } from './app/store.ts';
-import { addAuthorization } from './api.ts';
+import { GOOGLE_CLIENT_ID } from './constants';
+import { persistor, store } from './app/store';
+import { addAuthorization } from './api';
 import App from './App.tsx';
 
 addAuthorization(store);
@@ -26,10 +28,12 @@ createRoot(document.getElementById('root')!).render(
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             maxSnack={1}
           >
-            <App />
+            <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+              <App />
+            </GoogleOAuthProvider>
           </SnackbarProvider>
         </BrowserRouter>
       </PersistGate>
     </Provider>
-  </>
+  </>,
 );
