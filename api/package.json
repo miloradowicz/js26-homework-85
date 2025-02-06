@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "nodemon index.ts",
     "seed": "ts-node fixtures.ts",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prettier": "npx prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -14,7 +15,9 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "google-auth-library": "^9.15.1",
     "mongoose": "^8.9.3",
     "multer": "^1.4.5-lts.1"
   },
@@ -29,8 +32,9 @@
     "eslint": "^9.19.0",
     "globals": "^15.14.0",
     "nodemon": "^3.1.9",
+    "prettier": "^3.4.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
-    "typescript-eslint": "^8.22.0"
+    "typescript-eslint": "^8.23.0"
   }
 }
